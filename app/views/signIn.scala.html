@@ -1,0 +1,37 @@
+@(heading: String, form: Form[controllers.LoginForm])(implicit request: play.api.mvc.Request[Any], messages: Messages)
+
+<html>
+    <head>
+        <title>Login</title>
+    </head>
+    <body>
+        @helper.form(action = controllers.routes.LoginController.login) {
+
+            <div>
+                @helper.CSRF.formField
+
+                <div>
+
+                    <div>
+                        <label for="emailaddress"><strong>Email address</strong></label>
+                        <input type="text" id="emailaddress"
+                        name="emailaddress"
+                        value="@form.data.getOrElse("emailaddress", "")"
+                        aria-required="true"/>
+                    </div>
+                    <div>
+                        <label for="password"><strong>Password</strong></label>
+                        <input type="password" id="password"
+                        name="password"
+                        aria-hidden="true"
+                        aria-required="true"/>
+                    </div>
+                </div>
+
+                <div>
+                    <button id="submit" class="button" type="submit">Sign in</button>
+                </div>
+            </div>
+        }
+    </body>
+</html>

@@ -16,6 +16,7 @@ resolvers += "Akka Snapshot Repository" at "http://repo.akka.io/snapshots/"
 scalaVersion := "2.12.2"
 
 libraryDependencies ++= Seq( ws, guice )
+libraryDependencies += "jp.t2v" % "play2-auth_2.11" % "0.14.2"
 
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.1" % "test"
 libraryDependencies += "org.mockito" % "mockito-all" % "1.10.19" % "test"

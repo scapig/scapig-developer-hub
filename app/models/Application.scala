@@ -38,3 +38,8 @@ object RateLimitTier extends Enumeration {
   type RateLimitTier = Value
   val GOLD, SILVER, BRONZE = Value
 }
+
+case class CreateApplicationRequest(name: String,
+                                    description: String,
+                                    applicationUrls: ApplicationUrls,
+                                    collaborators: Set[Collaborator])

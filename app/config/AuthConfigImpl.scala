@@ -1,7 +1,7 @@
 package config
 
 import javax.inject.Inject
-
+/*
 import controllers.routes
 import jp.t2v.lab.play2.auth.{AsyncIdContainer, AuthConfig, CookieTokenAccessor, TransparentIdContainer}
 import models._
@@ -12,6 +12,7 @@ import services.SessionService
 import scala.concurrent.Future.successful
 import scala.concurrent.{ExecutionContext, Future}
 import scala.reflect._
+
 
 trait AuthConfigImpl extends AuthConfig {
   val appConfig: AppConfig
@@ -65,3 +66,4 @@ trait AuthConfigImpl extends AuthConfig {
   )
 
 }
+*/

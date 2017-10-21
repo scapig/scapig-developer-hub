@@ -13,14 +13,14 @@ import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import play.api.i18n.Messages.Implicits._
 
-class LoginController @Inject()(val appConfig: AppConfig, val sessionService: SessionService, val messagesApi: MessagesApi) extends LoggedOut with I18nSupport {
+class LoginController @Inject()(val appConfig: AppConfig, val sessionService: SessionService, val messagesApi: MessagesApi) {
   val loginForm: Form[LoginForm] = LoginForm.form
 
-  def showLoginPage() = loggedOutAction { implicit request =>
-    Future.successful(Ok(views.html.signIn("Sign in", loginForm)))
+  def showLoginPage() = Action.async { implicit request =>
+    Future.successful(Results.Ok(views.html.signIn("Sign in", loginForm)))
   }
 
-  def login() = loggedOutAction { implicit request =>
+  def login() = Action.async { implicit request =>
     Future(Results.Ok(""))
   }
 }

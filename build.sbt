@@ -16,11 +16,11 @@ resolvers += "Akka Snapshot Repository" at "http://repo.akka.io/snapshots/"
 scalaVersion := "2.12.2"
 
 libraryDependencies ++= Seq( ws, guice )
-libraryDependencies += "jp.t2v" % "play2-auth_2.11" % "0.14.2"
+libraryDependencies += "com.typesafe.play" %% "play-json-joda" % "2.6.0"
 
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.1" % "test"
 libraryDependencies += "org.mockito" % "mockito-all" % "1.10.19" % "test"
-libraryDependencies += "com.github.tomakehurst" % "wiremock" % "2.8.0" % "component"
+libraryDependencies += "com.github.tomakehurst" % "wiremock-standalone" % "2.8.0" % "test"
 libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.1" % "component"
 libraryDependencies += "org.scalaj" %% "scalaj-http" % "2.3.0" % "component"
 

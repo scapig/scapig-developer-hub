@@ -1,0 +1,36 @@
+@import models.ApplicationSummary
+
+@(applications: Seq[ApplicationSummary])(implicit request: play.api.mvc.Request[Any]) {
+
+    <html>
+        <head><title>Applications</title></head>
+        <body>
+            <table class="app">
+                <colgroup>
+                    <col width="25%"/>
+                    <col width="15%"/>
+                    <col width="50%"/>
+                    <col width="10%"/>
+                </colgroup>
+                <thead>
+                    <th>Name</th>
+                    <th>Environment</th>
+                    <th>Description</th>
+                    <th class="text--right hard--right">Role</th>
+                </thead>
+                @for(app<-applications) {
+                    <tr>
+                        <td>
+                            <a class="word-wrap" href="@{routes.ManageApplicationController.editApplication(app.id)}" data-app-name>@app.name</a>
+                        </td>
+                        <td class="no-wrap truncate truncate--table-cell" data-app-description>@app.description</td>
+                        <td class="text--right hard--right" data-app-user-role>
+                            @if(app.role == Role.ADMINISTRATOR) {Admin}
+                            @if(app.role == Role.DEVELOPER) {Developer}
+                        </td>
+                    </tr>
+                }
+            </table>
+        </body>
+    </html>
+}

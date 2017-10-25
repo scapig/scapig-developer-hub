@@ -1,7 +1,8 @@
 
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
 
-GET     /applications               @controllers.ManageApplicationController.manageApps
+GET     /applications               @controllers.ManageApplicationController.manageApps(email: String)
+GET     /applications/:id           @controllers.ManageApplicationController.editApplication(id: String)
 
 GET     /login                     @controllers.LoginController.showLoginPage()
 POST    /login                     @controllers.LoginController.login()

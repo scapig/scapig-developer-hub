@@ -20,6 +20,8 @@ class ManageApplicationController  @Inject()(cc: ControllerComponents, applicati
   }
 
   def editApplication(id: String) =  Action.async { implicit request =>
-    Future(Ok(""))
+    applicationService.fetchApplicationViewData(id) map { applicationViewData =>
+      Ok(views.html.applications.applicationDetails(applicationViewData))
+    }
   }
 }

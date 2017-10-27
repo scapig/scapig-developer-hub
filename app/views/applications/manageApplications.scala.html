@@ -1,6 +1,6 @@
 @import models.ApplicationSummary
 
-@(applications: Seq[ApplicationSummary])(implicit request: play.api.mvc.Request[Any]) {
+@(applications: Seq[ApplicationSummary])(implicit request: play.api.mvc.Request[Any])
 
     <html>
         <head><title>Applications</title></head>
@@ -8,13 +8,11 @@
             <table class="app">
                 <colgroup>
                     <col width="25%"/>
-                    <col width="15%"/>
                     <col width="50%"/>
-                    <col width="10%"/>
+                    <col width="25%"/>
                 </colgroup>
                 <thead>
                     <th>Name</th>
-                    <th>Environment</th>
                     <th>Description</th>
                     <th class="text--right hard--right">Role</th>
                 </thead>
@@ -33,4 +31,3 @@
             </table>
         </body>
     </html>
-}

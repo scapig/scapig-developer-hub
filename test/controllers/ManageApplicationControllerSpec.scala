@@ -1,6 +1,6 @@
 package controllers
 
-import models._
+import models.{ApplicationViewData, _}
 import org.joda.time.DateTime
 import org.mockito.BDDMockito.given
 import org.scalatest.mockito.MockitoSugar
@@ -20,6 +20,9 @@ class ManageApplicationControllerSpec extends UnitSpec with MockitoSugar {
   val application = Application("app name", "app description", Set(Collaborator(collaboratorEmail, Role.ADMINISTRATOR)), applicationUrls,
     ApplicationCredentials(prodCredentials, sandboxCredentials), DateTime.now(), RateLimitTier.BRONZE)
 
+  val apiSubscription = APISubscription("api1", "apiContext1", Seq(APIVersionSubscription(APIVersion("v1", APIStatus.PROTOTYPED), subscribed = true)))
+  val applicationViewData = ApplicationViewData(application, Seq(apiSubscription))
+
   trait Setup {
     val request = FakeRequest()
     val applicationService = mock[ApplicationService]
@@ -37,4 +40,16 @@ class ManageApplicationControllerSpec extends UnitSpec with MockitoSugar {
       bodyOf(result) should include(application.name)
     }
   }
+
+  "editApplication" should {
+    "display the application details" in new Setup {
+      given(applicationService.fetchApplicationViewData(application.id.toString)).willReturn(successful(applicationViewData))
+
+      val result = await(underTest.editApplication(application.id.toString)(request))
+
+      status(result) shouldBe Status.OK
+      bodyOf(result) should (include(application.name) and include (application.description))
+    }
+  }
+
 }

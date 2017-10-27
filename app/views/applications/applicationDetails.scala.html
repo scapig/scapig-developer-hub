@@ -1,0 +1,14 @@
+@import models.Application
+
+@(applicationView: ApplicationViewData)(implicit request: play.api.mvc.Request[Any])
+
+    <html>
+        <head><title>Application @{applicationView.app.name}</title></head>
+        <body>
+            Application Name: @{applicationView.app.name}
+            Application Description: @{applicationView.app.description}
+            Rate Limit Tiers: @{applicationView.app.rateLimitTier}
+            Production Credentials: @{applicationView.app.credentials.production}
+            Sandbox Credentials: @{applicationView.app.credentials.sandbox}
+        </body>
+    </html>

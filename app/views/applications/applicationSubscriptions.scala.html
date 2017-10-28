@@ -1,0 +1,40 @@
+@import models.Application
+
+@(applicationView: ApplicationViewData)(implicit request: play.api.mvc.Request[Any])
+
+    <html>
+        <head><title>Application @{applicationView.app.name}</title></head>
+        <body>
+            <a href="/applications/dda3add6-dda6-4785-aa0b-644cb403e12c">Application Details</a>
+            <br/>
+            <a href="/applications/dda3add6-dda6-4785-aa0b-644cb403e12c?tab=APP_SUBSCRIPTIONS_TAB">Subscriptions</a>
+            <br/>
+            <a href="/applications/dda3add6-dda6-4785-aa0b-644cb403e12c?tab=APP_CREDENTIALS_TAB">Credentials</a>
+            <p>
+
+            <p>
+                You have to subscribe to an API so your application can access it.
+                You’ll also receive notifications about that API’s lifecycle events, such as new versions
+                being introduced and old versions being retired.
+            </p>
+
+            @applicationView.subscriptions.map { subscription =>
+
+            <div>
+                <div>@subscription.apiName</div>
+                @subscription.versions.map { version =>
+                    <div>
+                    @version.version.version (@version.version.status)
+                    @if(version.subscribed) {
+                        On
+                        <a href="">Off</a>
+                    } else {
+                        <a href="">On</a>
+                        Off
+                }
+                </div>
+                }
+            </div>
+        }
+        </body>
+    </html>

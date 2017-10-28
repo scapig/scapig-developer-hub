@@ -50,6 +50,24 @@ class ManageApplicationControllerSpec extends UnitSpec with MockitoSugar {
       status(result) shouldBe Status.OK
       bodyOf(result) should (include(application.name) and include (application.description))
     }
-  }
 
+    "display the application subscriptions when tab is APP_SUBSCRIPTIONS_TAB" in new Setup {
+      given(applicationService.fetchApplicationViewData(application.id.toString)).willReturn(successful(applicationViewData))
+
+      val result = await(underTest.editApplication(application.id.toString, Some("APP_SUBSCRIPTIONS_TAB"))(request))
+
+      status(result) shouldBe Status.OK
+      bodyOf(result) should include(apiSubscription.apiName)
+    }
+
+    "display the application credentials when tab is APP_CREDENTIALS_TAB" in new Setup {
+      given(applicationService.fetchApplicationViewData(application.id.toString)).willReturn(successful(applicationViewData))
+
+      val result = await(underTest.editApplication(application.id.toString, Some("APP_CREDENTIALS_TAB"))(request))
+
+      status(result) shouldBe Status.OK
+      bodyOf(result) should (include(application.credentials.production.clientId) and include(application.credentials.sandbox.clientId))
+    }
+
+  }
 }

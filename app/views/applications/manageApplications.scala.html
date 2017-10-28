@@ -19,7 +19,7 @@
                 @for(app<-applications) {
                     <tr>
                         <td>
-                            <a class="word-wrap" href="@{routes.ManageApplicationController.editApplication(app.id)}" data-app-name>@app.name</a>
+                            <a class="word-wrap" href="@{routes.ManageApplicationController.editApplication(app.id, None)}" data-app-name>@app.name</a>
                         </td>
                         <td class="no-wrap truncate truncate--table-cell" data-app-description>@app.description</td>
                         <td class="text--right hard--right" data-app-user-role>

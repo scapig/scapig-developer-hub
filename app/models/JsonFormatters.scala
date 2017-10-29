@@ -16,11 +16,11 @@ object JsonFormatters {
   implicit val formatClientSecret = Json.format[ClientSecret]
   implicit val formatEnvironmentCredentials = Json.format[EnvironmentCredentials]
   implicit val formatApplicationCredentials = Json.format[ApplicationCredentials]
-  implicit val formatApplicationUrls = Json.format[ApplicationUrls]
   implicit val formatCollaborator = Json.format[Collaborator]
   implicit val formatApplication = Json.format[Application]
 
   implicit val formatCreateApplicationRequest = Json.format[CreateApplicationRequest]
+  implicit val formatUpdateApplicationRequest = Json.format[UpdateApplicationRequest]
 
   implicit val formatDeveloper = Json.format[Developer]
   implicit val formatUserCreateRequest = Json.format[UserCreateRequest]

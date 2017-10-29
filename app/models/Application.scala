@@ -2,14 +2,14 @@ package models
 
 import java.util.UUID
 
-import controllers.AddApplicationForm
+import controllers.{AddApplicationForm, EditApplicationForm}
 import models.Role.Role
 import org.joda.time.DateTime
 
 case class Application(name: String,
                        description: String,
                        collaborators: Set[Collaborator],
-                       applicationUrls: ApplicationUrls,
+                       redirectUris: Seq[String],
                        credentials: ApplicationCredentials,
                        createdOn: DateTime,
                        rateLimitTier: RateLimitTier.Value,
@@ -24,10 +24,6 @@ object Role extends Enumeration {
   type Role = Value
   val DEVELOPER, ADMINISTRATOR = Value
 }
-
-case class ApplicationUrls(redirectUris: Seq[String] = Seq.empty,
-                           termsAndConditionsUrl: String = "",
-                           privacyPolicyUrl: String = "")
 
 case class ApplicationCredentials(production: EnvironmentCredentials,
                                   sandbox: EnvironmentCredentials)
@@ -46,14 +42,26 @@ object RateLimitTier extends Enumeration {
 
 case class CreateApplicationRequest(name: String,
                                     description: String,
-                                    applicationUrls: ApplicationUrls,
+                                    redirectUris: Seq[String],
                                     collaborators: Set[Collaborator])
 
 object CreateApplicationRequest {
   def apply(form: AddApplicationForm, userEmail: String): CreateApplicationRequest = {
-    CreateApplicationRequest(form.applicationName, form.description.getOrElse(""), ApplicationUrls(), Set(Collaborator(userEmail, Role.ADMINISTRATOR)))
+    CreateApplicationRequest(form.applicationName, form.description.getOrElse(""), Seq.empty, Set(Collaborator(userEmail, Role.ADMINISTRATOR)))
   }
 }
+
+case class UpdateApplicationRequest(name: String,
+                                    description: String,
+                                    redirectUri: Seq[String],
+                                    rateLimitTier: RateLimitTier.Value)
+
+object UpdateApplicationRequest {
+  def apply(form: EditApplicationForm): UpdateApplicationRequest = {
+    UpdateApplicationRequest(form.applicationName, form.description.getOrElse(""), form.redirectUris, RateLimitTier.withName(form.rateLimitTier))
+  }
+}
+
 
 case class ApplicationSummary(id: String, name: String, description: String, role: Role)
 

@@ -2,9 +2,9 @@ package controllers
 
 import javax.inject.{Inject, Singleton}
 
-import models.{ApplicationNotFoundException, ApplicationSummary, CreateApplicationRequest, UnauthorizedActionException}
+import models._
 import play.api.data.Form
-import play.api.data.Forms.{mapping, optional, text}
+import play.api.data.Forms.{mapping, optional, seq, text}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{AbstractController, Action, ControllerComponents, Results}
 import services.ApplicationService
@@ -33,7 +33,7 @@ class ManageApplicationController  @Inject()(cc: ControllerComponents, applicati
       tab match {
         case Some(`APP_SUBSCRIPTIONS_TAB`) => Ok(views.html.applications.applicationSubscriptions(applicationViewData))
         case Some(`APP_CREDENTIALS_TAB`) => Ok(views.html.applications.applicationCredentials(applicationViewData))
-        case _ => Ok(views.html.applications.applicationDetails(applicationViewData))
+        case _ => Ok(views.html.applications.applicationDetails(applicationViewData, EditApplicationForm.form))
       }
     } recover {
       case _: ApplicationNotFoundException => Results.NotFound("Application not found")
@@ -62,7 +62,9 @@ class ManageApplicationController  @Inject()(cc: ControllerComponents, applicati
   def createApplicationAction() = Action.async { implicit request =>
     val email = "admin@app.com"
 
-    def addApplicationWithFormErrors(errors: Form[AddApplicationForm]) = Future.successful(BadRequest(views.html.applications.addApplication(errors)))
+    def addApplicationWithFormErrors(errors: Form[AddApplicationForm]) = {
+      Future.successful(BadRequest(views.html.applications.addApplication(errors)))
+    }
 
     def addApplicationWithValidForm(validForm: AddApplicationForm) = {
       applicationService.createApplication(CreateApplicationRequest(validForm, email))
@@ -70,6 +72,22 @@ class ManageApplicationController  @Inject()(cc: ControllerComponents, applicati
     }
     AddApplicationForm.form.bindFromRequest.fold(addApplicationWithFormErrors, addApplicationWithValidForm)
   }
+
+  //TODO Add email
+  def updateApplicationAction(id: String) = Action.async { implicit request =>
+    def updateApplicationWithFormErrors(errors: Form[EditApplicationForm]) = {
+      applicationService.fetchApplicationViewData(id) map { applicationViewData =>
+        BadRequest(views.html.applications.applicationDetails(applicationViewData, errors))
+      }
+    }
+
+    def updateApplicationWithValidForm(validForm: EditApplicationForm) = {
+      applicationService.updateApplication(id, UpdateApplicationRequest(validForm))
+        .map(appUpdated => Redirect(routes.ManageApplicationController.editApplication(appUpdated.id.toString, None)))
+    }
+    EditApplicationForm.form.bindFromRequest.fold(updateApplicationWithFormErrors, updateApplicationWithValidForm)
+  }
+
 }
 
 case class AddApplicationForm(applicationName: String, description: Option[String])
@@ -81,5 +99,22 @@ object AddApplicationForm {
       "applicationName" -> applicationNameValidator,
       "description" -> optional(text)
     )(AddApplicationForm.apply)(AddApplicationForm.unapply)
+  )
+}
+
+case class EditApplicationForm(applicationName: String,
+                               description: Option[String] = None,
+                               redirectUris: Seq[String] = Seq(),
+                               rateLimitTier: String)
+
+object EditApplicationForm {
+
+  val form: Form[EditApplicationForm] = Form(
+    mapping(
+      "applicationName" -> applicationNameValidator,
+      "description" -> optional(text),
+      "redirectUris" -> seq(redirectUriValidator),
+      "rateLimitTier" -> rateLimitTierValidator
+    )(EditApplicationForm.apply)(EditApplicationForm.unapply)
   )
 }

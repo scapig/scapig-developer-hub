@@ -22,10 +22,10 @@ class ApplicationConnectorSpec extends UnitSpec with BeforeAndAfterAll with Befo
   val wireMockServer = new WireMockServer(wireMockConfig().port(port))
 
   val collaboratorEmail = "admin@app.com"
-  val applicationUrls = ApplicationUrls(Seq("http://redirecturi"), "http://conditionUrl", "http://privacyUrl")
+  val redirectUris = Seq("http://redirecturi")
   val prodCredentials = EnvironmentCredentials("prodClientId", "prodServerToken", Seq(ClientSecret("prodSecret", DateTime.now())))
   val sandboxCredentials = EnvironmentCredentials("sandboxClientId", "sandboxServerToken", Seq(ClientSecret("sandboxSecret", DateTime.now())))
-  val application = Application("app name", "app description", Set(Collaborator(collaboratorEmail, Role.ADMINISTRATOR)), applicationUrls,
+  val application = Application("app name", "app description", Set(Collaborator(collaboratorEmail, Role.ADMINISTRATOR)), redirectUris,
     ApplicationCredentials(prodCredentials, sandboxCredentials), DateTime.now(), RateLimitTier.BRONZE)
 
   override def beforeAll {
@@ -59,7 +59,7 @@ class ApplicationConnectorSpec extends UnitSpec with BeforeAndAfterAll with Befo
 
   "create" should {
     "create an application and return it in the response" in new Setup {
-      val request = CreateApplicationRequest(application.name, application.description, application.applicationUrls, application.collaborators)
+      val request = CreateApplicationRequest(application.name, application.description, application.redirectUris, application.collaborators)
 
       stubFor(post(s"/application").withRequestBody(equalToJson(Json.toJson(request).toString())).willReturn(aResponse()
         .withStatus(Status.CREATED)
@@ -68,6 +68,21 @@ class ApplicationConnectorSpec extends UnitSpec with BeforeAndAfterAll with Befo
       val result = await(applicationConnector.create(request))
 
       result shouldBe application
+    }
+  }
+
+  "update" should {
+    "update an application and return it in the response" in new Setup {
+      val request = UpdateApplicationRequest(application.name, application.description, application.redirectUris, application.rateLimitTier)
+      val updatedApplication = application.copy(name = "updatedName")
+
+      stubFor(post(s"/application/${application.id}").withRequestBody(equalToJson(Json.toJson(request).toString())).willReturn(aResponse()
+        .withStatus(Status.OK)
+        .withBody(Json.toJson(updatedApplication).toString())))
+
+      val result = await(applicationConnector.update(application.id.toString, request))
+
+      result shouldBe updatedApplication
     }
   }
 

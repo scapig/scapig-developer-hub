@@ -44,4 +44,9 @@ class ApplicationService @Inject()(applicationConnector: ApplicationConnector, a
   def createApplication(createApplicationRequest: CreateApplicationRequest): Future[Application] = {
     applicationConnector.create(createApplicationRequest)
   }
+
+  def updateApplication(id: String, updateApplicationRequest: UpdateApplicationRequest): Future[Application] = {
+    applicationConnector.update(id, updateApplicationRequest)
+  }
+
 }

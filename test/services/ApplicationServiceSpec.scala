@@ -15,10 +15,10 @@ import scala.concurrent.Future.{failed, successful}
 class ApplicationServiceSpec extends UnitSpec with MockitoSugar {
 
   val collaboratorEmail = "admin@app.com"
-  val applicationUrls = ApplicationUrls(Seq("http://redirecturi"), "http://conditionUrl", "http://privacyUrl")
+  val redirectUris = Seq("http://redirecturi")
   val prodCredentials = EnvironmentCredentials("prodClientId", "prodServerToken", Seq(ClientSecret("prodSecret", DateTime.now())))
   val sandboxCredentials = EnvironmentCredentials("sandboxClientId", "sandboxServerToken", Seq(ClientSecret("sandboxSecret", DateTime.now())))
-  val application = Application("app name", "app description", Set(Collaborator(collaboratorEmail, Role.ADMINISTRATOR)), applicationUrls,
+  val application = Application("app name", "app description", Set(Collaborator(collaboratorEmail, Role.ADMINISTRATOR)), redirectUris,
     ApplicationCredentials(prodCredentials, sandboxCredentials), DateTime.now(), RateLimitTier.BRONZE)
   val applicationId = application.id.toString
 
@@ -129,7 +129,7 @@ class ApplicationServiceSpec extends UnitSpec with MockitoSugar {
 
   "create" should {
     "create a new application" in new Setup {
-      val createApplicationRequest = CreateApplicationRequest("appName", "appDescription", ApplicationUrls(), Set(Collaborator(collaboratorEmail, Role.ADMINISTRATOR)))
+      val createApplicationRequest = CreateApplicationRequest("appName", "appDescription", redirectUris, Set(Collaborator(collaboratorEmail, Role.ADMINISTRATOR)))
 
       given(applicationConnector.create(createApplicationRequest)).willReturn(successful(application))
 
@@ -138,4 +138,17 @@ class ApplicationServiceSpec extends UnitSpec with MockitoSugar {
       result shouldBe application
     }
   }
+
+  "update" should {
+    "update an application" in new Setup {
+      val updateApplicationRequest = UpdateApplicationRequest("appName", "appDescription", redirectUris, RateLimitTier.SILVER)
+
+      given(applicationConnector.update(application.id.toString, updateApplicationRequest)).willReturn(successful(application))
+
+      val result = await(underTest.updateApplication(application.id.toString, updateApplicationRequest))
+
+      result shouldBe application
+    }
+  }
+
 }

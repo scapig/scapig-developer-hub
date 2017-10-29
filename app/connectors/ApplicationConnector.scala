@@ -31,6 +31,13 @@ class ApplicationConnector @Inject()(appConfig: AppConfig, wsClient: WSClient) {
     }
   }
 
+  def update(id: String, updateApplicationRequest: UpdateApplicationRequest): Future[Application] = {
+    wsClient.url(s"$serviceUrl/application/$id").post(Json.toJson(updateApplicationRequest)) map {
+      case response if response.status == Status.OK => Json.parse(response.body).as[Application]
+      case r: WSResponse => throw new RuntimeException(s"Invalid response from application ${r.status} ${r.body}")
+    }
+  }
+
   def fetch(id: String): Future[Application] = {
     wsClient.url(s"$serviceUrl/application/$id").get() map {
       case response if response.status == Status.OK => Json.parse(response.body).as[Application]

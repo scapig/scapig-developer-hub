@@ -9,6 +9,9 @@ import play.api.http.Status
 import play.api.test.{FakeRequest, Helpers}
 import services.ApplicationService
 import utils.UnitSpec
+import play.api.test.CSRFTokenHelper._
+import play.api.test.{FakeRequest}
+import play.test.WithApplication
 
 import scala.concurrent.Future
 import scala.concurrent.Future.{failed, successful}
@@ -16,10 +19,10 @@ import scala.concurrent.Future.{failed, successful}
 class ManageApplicationControllerSpec extends UnitSpec with MockitoSugar {
 
   val collaboratorEmail = "admin@app.com"
-  val applicationUrls = ApplicationUrls(Seq("http://redirecturi"), "http://conditionUrl", "http://privacyUrl")
+  val redirectUris = Seq("http://redirecturi")
   val prodCredentials = EnvironmentCredentials("prodClientId", "prodServerToken", Seq(ClientSecret("prodSecret", DateTime.now())))
   val sandboxCredentials = EnvironmentCredentials("sandboxClientId", "sandboxServerToken", Seq(ClientSecret("sandboxSecret", DateTime.now())))
-  val application = Application("app name", "app description", Set(Collaborator(collaboratorEmail, ADMINISTRATOR)), applicationUrls,
+  val application = Application("app name", "app description", Set(Collaborator(collaboratorEmail, ADMINISTRATOR)), redirectUris,
     ApplicationCredentials(prodCredentials, sandboxCredentials), DateTime.now(), RateLimitTier.BRONZE)
   val applicationId = application.id.toString
 
@@ -48,7 +51,7 @@ class ManageApplicationControllerSpec extends UnitSpec with MockitoSugar {
     "display the application details" in new Setup {
       given(applicationService.fetchApplicationViewData(applicationId)).willReturn(successful(applicationViewData))
 
-      val result = await(underTest.editApplication(applicationId)(request))
+      val result = await(underTest.editApplication(applicationId)(addCSRFToken(request)))
 
       status(result) shouldBe Status.OK
       bodyOf(result) should (include(application.name) and include(application.description))
@@ -57,7 +60,7 @@ class ManageApplicationControllerSpec extends UnitSpec with MockitoSugar {
     "display the application subscriptions when tab is APP_SUBSCRIPTIONS_TAB" in new Setup {
       given(applicationService.fetchApplicationViewData(applicationId)).willReturn(successful(applicationViewData))
 
-      val result = await(underTest.editApplication(applicationId, Some("APP_SUBSCRIPTIONS_TAB"))(request))
+      val result = await(underTest.editApplication(applicationId, Some("APP_SUBSCRIPTIONS_TAB"))(addCSRFToken(request)))
 
       status(result) shouldBe Status.OK
       bodyOf(result) should include(apiSubscription.apiName)
@@ -106,7 +109,7 @@ class ManageApplicationControllerSpec extends UnitSpec with MockitoSugar {
 
   "createApplicationForm" should {
     "display the create application form" in new Setup {
-      val result = await(underTest.createApplicationForm()(request))
+      val result = await(underTest.createApplicationForm()(addCSRFToken(request)))
 
       status(result) shouldBe Status.OK
       bodyOf(result) should include("Add an application")
@@ -115,23 +118,23 @@ class ManageApplicationControllerSpec extends UnitSpec with MockitoSugar {
 
   "createApplicationAction" should {
     "create an application and redirect to the application details page" in new Setup {
-      val createRequest = CreateApplicationRequest("appName", "appDescription", ApplicationUrls(), Set(Collaborator("admin@app.com", ADMINISTRATOR)))
+      val createRequest = CreateApplicationRequest("appName", "appDescription", Seq.empty, Set(Collaborator("admin@app.com", ADMINISTRATOR)))
       given(applicationService.createApplication(createRequest)).willReturn(successful(application))
 
-      val result = await(underTest.createApplicationAction()(request.withFormUrlEncodedBody(
+      val result = await(underTest.createApplicationAction()(addCSRFToken(request.withFormUrlEncodedBody(
         "applicationName" -> "appName",
         "description" -> "appDescription"
-      )))
+      ))))
 
       status(result) shouldBe Status.SEE_OTHER
       result.header.headers("Location") shouldBe s"/applications/$applicationId"
     }
 
     "display the application form when the name is not set" in new Setup {
-      val result = await(underTest.createApplicationAction()(request.withFormUrlEncodedBody(
+      val result = await(underTest.createApplicationAction()(addCSRFToken(request.withFormUrlEncodedBody(
         "applicationName" -> "",
         "description" -> "appDescription"
-      )))
+      ))))
 
       status(result) shouldBe Status.BAD_REQUEST
       bodyOf(result) should include("Add an application")

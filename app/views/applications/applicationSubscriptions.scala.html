@@ -1,3 +1,4 @@
+@import helper._
 @import models.Application
 
 @(applicationView: ApplicationViewData)(implicit request: play.api.mvc.Request[Any])
@@ -5,11 +6,11 @@
     <html>
         <head><title>Application @{applicationView.app.name}</title></head>
         <body>
-            <a href="/applications/dda3add6-dda6-4785-aa0b-644cb403e12c">Application Details</a>
+            <a href="/applications/@applicationView.app.id">Application Details</a>
             <br/>
-            <a href="/applications/dda3add6-dda6-4785-aa0b-644cb403e12c?tab=APP_SUBSCRIPTIONS_TAB">Subscriptions</a>
+            <a href="/applications/@applicationView.app.id?tab=APP_SUBSCRIPTIONS_TAB">Subscriptions</a>
             <br/>
-            <a href="/applications/dda3add6-dda6-4785-aa0b-644cb403e12c?tab=APP_CREDENTIALS_TAB">Credentials</a>
+            <a href="/applications/@applicationView.app.id?tab=APP_CREDENTIALS_TAB">Credentials</a>
             <p>
 
             <p>
@@ -18,23 +19,29 @@
                 being introduced and old versions being retired.
             </p>
 
-            @applicationView.subscriptions.map { subscription =>
+                @applicationView.subscriptions.map { subscription =>
 
-            <div>
-                <div>@subscription.apiName</div>
-                @subscription.versions.map { version =>
                     <div>
-                    @version.version.version (@version.version.status)
-                    @if(version.subscribed) {
-                        On
-                        <a href="">Off</a>
-                    } else {
-                        <a href="">On</a>
-                        Off
+                        <div>@subscription.apiName</div>
+                        @subscription.versions.map { version =>
+                            <div>
+                                @version.version.version (@version.version.status)
+                                @if(version.subscribed) {
+                                    On
+                                    @helper.form(action = controllers.routes.ManageApplicationController.unsubscribe(applicationView.app.id.toString, subscription.context, version.version.version)) {
+                                        @CSRF.formField
+                                        <button type="submit" role="button">Off</button>
+                                    }
+                                } else {
+                                    @helper.form(action = controllers.routes.ManageApplicationController.subscribe(applicationView.app.id.toString, subscription.context, version.version.version)) {
+                                        @CSRF.formField
+                                        <button type="submit" role="button">On</button>
+                                    }
+                                    Off
+                                }
+                            </div>
+                        }
+                    </div>
                 }
-                </div>
-                }
-            </div>
-        }
         </body>
     </html>

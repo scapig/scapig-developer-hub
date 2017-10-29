@@ -51,7 +51,7 @@ case class CreateApplicationRequest(name: String,
 
 object CreateApplicationRequest {
   def apply(form: AddApplicationForm, userEmail: String): CreateApplicationRequest = {
-    CreateApplicationRequest(form.applicationName, form.description, ApplicationUrls(), Set(Collaborator(userEmail, Role.ADMINISTRATOR)))
+    CreateApplicationRequest(form.applicationName, form.description.getOrElse(""), ApplicationUrls(), Set(Collaborator(userEmail, Role.ADMINISTRATOR)))
   }
 }
 

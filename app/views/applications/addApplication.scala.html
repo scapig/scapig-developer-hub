@@ -1,19 +1,33 @@
-@(form: Form[controllers.AddApplicationForm])(implicit request: play.api.mvc.Request[Any])
+@import helper._
+
+@(form: Form[controllers.AddApplicationForm])(implicit request: play.api.mvc.Request[Any], messages: Messages)
 
     <html>
         <head><title>Add an application</title></head>
         <body>
             <h1>Add an application</h1>
             <div>
-                <label for="applicationName"><strong>Application name</strong></label>
-                <input type="text" id="applicationName" name="applicationName" value="@form.data.get("applicationName")" maxLength="50"/>
+                @helper.form(action = controllers.routes.ManageApplicationController.createApplicationAction) {
+                    @CSRF.formField
 
-                <label for="description"><strong>Description</strong> (optional)</label>
-                <textarea id="description" name="description" maxLength="250">@form.data.get("description")</textarea>
+                    @if(form.hasErrors) {
+                        There are errors on the page.
+                        <ul>
+                        @for(error <- form.errors) {
+                            <li>@Messages(error.message)</li>
+                        }
+                        </ul>
+                    }
 
-                <button id="add" class="button" type="submit" role="button">Add</button>
-                <a href="@routes.ManageApplicationController.manageApps" >Cancel</a>
+                    <label for="applicationName"><strong>Application name</strong></label>
+                    <input type="text" id="applicationName" name="applicationName" value="@form.data.get("applicationName")" maxLength="50"/>
 
+                    <label for="description"><strong>Description</strong> (optional)</label>
+                    <textarea id="description" name="description" maxLength="250">@form.data.get("description")</textarea>
+
+                    <button id="add" type="submit" role="button">Add</button>
+                    <a href="@routes.ManageApplicationController.manageApps" >Cancel</a>
+                }
             </div>
         </body>
     </html>

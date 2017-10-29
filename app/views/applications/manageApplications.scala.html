@@ -14,15 +14,17 @@
                 <thead>
                     <th>Name</th>
                     <th>Description</th>
-                    <th class="text--right hard--right">Role</th>
+                    <th>Role</th>
                 </thead>
+                <a href="@{routes.ManageApplicationController.createApplicationForm()}">Add an application</a>
+
                 @for(app<-applications) {
                     <tr>
                         <td>
-                            <a class="word-wrap" href="@{routes.ManageApplicationController.editApplication(app.id, None)}" data-app-name>@app.name</a>
+                            <a href="@{routes.ManageApplicationController.editApplication(app.id, None)}">@app.name</a>
                         </td>
-                        <td class="no-wrap truncate truncate--table-cell" data-app-description>@app.description</td>
-                        <td class="text--right hard--right" data-app-user-role>
+                        <td>@app.description</td>
+                        <td>
                             @if(app.role == Role.ADMINISTRATOR) {Admin}
                             @if(app.role == Role.DEVELOPER) {Developer}
                         </td>

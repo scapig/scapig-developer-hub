@@ -5,6 +5,7 @@ import javax.inject.{Inject, Singleton}
 import models.{ApplicationNotFoundException, ApplicationSummary, CreateApplicationRequest, UnauthorizedActionException}
 import play.api.data.Form
 import play.api.data.Forms.{mapping, optional, text}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{AbstractController, Action, ControllerComponents, Results}
 import services.ApplicationService
 
@@ -12,7 +13,7 @@ import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
 @Singleton
-class ManageApplicationController  @Inject()(cc: ControllerComponents, applicationService: ApplicationService) extends AbstractController(cc) {
+class ManageApplicationController  @Inject()(cc: ControllerComponents, applicationService: ApplicationService) extends AbstractController(cc) with I18nSupport {
 
   val APP_DETAILS_TAB = "APP_DETAILS_TAB"
   val APP_SUBSCRIPTIONS_TAB = "APP_SUBSCRIPTIONS_TAB"
@@ -60,7 +61,6 @@ class ManageApplicationController  @Inject()(cc: ControllerComponents, applicati
   //TODO Add email
   def createApplicationAction() = Action.async { implicit request =>
     val email = "admin@app.com"
-    val requestForm = AddApplicationForm.form.bindFromRequest
 
     def addApplicationWithFormErrors(errors: Form[AddApplicationForm]) = Future.successful(BadRequest(views.html.applications.addApplication(errors)))
 
@@ -68,18 +68,18 @@ class ManageApplicationController  @Inject()(cc: ControllerComponents, applicati
       applicationService.createApplication(CreateApplicationRequest(validForm, email))
         .map(appCreated => Redirect(routes.ManageApplicationController.editApplication(appCreated.id.toString, None)))
     }
-    requestForm.fold(addApplicationWithFormErrors, addApplicationWithValidForm)
+    AddApplicationForm.form.bindFromRequest.fold(addApplicationWithFormErrors, addApplicationWithValidForm)
   }
 }
 
-case class AddApplicationForm(applicationName: String, description: String)
+case class AddApplicationForm(applicationName: String, description: Option[String])
 
 object AddApplicationForm {
 
   val form: Form[AddApplicationForm] = Form(
     mapping(
       "applicationName" -> applicationNameValidator,
-      "description" -> text
+      "description" -> optional(text)
     )(AddApplicationForm.apply)(AddApplicationForm.unapply)
   )
 }

@@ -1,8 +1,14 @@
 
-GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
+GET     /assets/*file                   controllers.Assets.versioned(path="/public", file: Asset)
 
-GET     /applications               @controllers.ManageApplicationController.manageApps(email: String)
-GET     /applications/:id           @controllers.ManageApplicationController.editApplication(id: String, tab: Option[String])
+GET     /applications/add               @controllers.ManageApplicationController.createApplicationForm()
+POST    /applications/add               @controllers.ManageApplicationController.createApplicationAction()
 
-GET     /login                     @controllers.LoginController.showLoginPage()
-POST    /login                     @controllers.LoginController.login()
+GET     /applications                   @controllers.ManageApplicationController.manageApps()
+GET     /applications/:id               @controllers.ManageApplicationController.editApplication(id: String, tab: Option[String])
+
+POST    /applications/:id/subscribe    @controllers.ManageApplicationController.subscribe(id: String, context: String, version: String)
+POST    /applications/:id/unsubscribe  @controllers.ManageApplicationController.unsubscribe(id: String, context: String, version: String)
+
+GET     /login                          @controllers.LoginController.showLoginPage()
+POST    /login                          @controllers.LoginController.login()

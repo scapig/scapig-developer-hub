@@ -104,32 +104,61 @@ class ApplicationConnectorSpec extends UnitSpec with BeforeAndAfterAll with Befo
 
       result shouldBe Seq(apiIdentifier)
     }
+
+    "fail with ApplicationNotFound when the application does not exist" in new Setup {
+      stubFor(get(s"/application/${application.id}/subscription").willReturn(aResponse()
+        .withStatus(Status.NOT_FOUND)))
+
+      intercept[ApplicationNotFoundException] {
+        await(applicationConnector.fetchSubscriptions(application.id.toString))
+      }
+    }
+
   }
 
   "subscribeToApi" should {
-    "subscribe the application to the API" in new Setup {
-      val api = APIIdentifier("aContext", "aVersion")
+    val api = APIIdentifier("aContext", "aVersion")
 
+    "subscribe the application to the API" in new Setup {
       stubFor(post(s"/application/${application.id}/subscription?context=aContext&version=aVersion").willReturn(aResponse()
         .withStatus(Status.NO_CONTENT)))
 
       val result = await(applicationConnector.subscribeToApi(application.id.toString, api))
 
-      result shouldBe api
+      result shouldBe HasSucceeded
+    }
+
+    "fail with ApplicationNotFound when the application does not exist" in new Setup {
+      stubFor(post(s"/application/${application.id}/subscription?context=aContext&version=aVersion").willReturn(aResponse()
+        .withStatus(Status.NOT_FOUND)))
+
+      intercept[ApplicationNotFoundException] {
+        await(applicationConnector.subscribeToApi(application.id.toString, api))
+      }
     }
   }
 
   "unsubscribeToApi" should {
-    "unsubscribe the application to the API" in new Setup {
-      val api = APIIdentifier("aContext", "aVersion")
+    val api = APIIdentifier("aContext", "aVersion")
 
+    "unsubscribe the application to the API" in new Setup {
       stubFor(delete(s"/application/${application.id}/subscription?context=aContext&version=aVersion").willReturn(aResponse()
         .withStatus(Status.NO_CONTENT)))
 
       val result = await(applicationConnector.unsubscribeToApi(application.id.toString, api))
 
-      result shouldBe api
+      result shouldBe HasSucceeded
     }
+
+    "fail with ApplicationNotFound when the application does not exist" in new Setup {
+      stubFor(delete(s"/application/${application.id}/subscription?context=aContext&version=aVersion").willReturn(aResponse()
+        .withStatus(Status.NOT_FOUND)))
+
+      intercept[ApplicationNotFoundException] {
+        await(applicationConnector.unsubscribeToApi(application.id.toString, api))
+      }
+    }
+
   }
 
 }

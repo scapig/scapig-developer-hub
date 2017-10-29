@@ -3,7 +3,7 @@ package services
 import javax.inject.Inject
 
 import connectors.{ApiDefinitionConnector, ApplicationConnector}
-import models.{APISubscription, APIVersionSubscription, Application, ApplicationViewData}
+import models._
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -25,5 +25,23 @@ class ApplicationService @Inject()(applicationConnector: ApplicationConnector, a
       }
       ApplicationViewData(application, apiSubscriptions)
     }
+  }
+
+  def subscribe(applicationId: String, context: String, version: String): Future[HasSucceeded] = {
+    for {
+      api <- apiDefinitionConnector.fetchApi(context, version)
+      hasSucceeded <- applicationConnector.subscribeToApi(applicationId, APIIdentifier(context, version))
+    } yield hasSucceeded
+  }
+
+  def unsubscribe(applicationId: String, context: String, version: String): Future[HasSucceeded] = {
+    for {
+      api <- apiDefinitionConnector.fetchApi(context, version)
+      hasSucceeded <- applicationConnector.unsubscribeToApi(applicationId, APIIdentifier(context, version))
+    } yield hasSucceeded
+  }
+
+  def createApplication(createApplicationRequest: CreateApplicationRequest): Future[Application] = {
+    applicationConnector.create(createApplicationRequest)
   }
 }

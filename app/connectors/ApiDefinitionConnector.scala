@@ -3,10 +3,11 @@ package connectors
 import javax.inject.Inject
 
 import config.AppConfig
-import models.{APIDefinition, Application}
+import models.{APIDefinition, ApiNotFoundException}
 import play.api.libs.json.Json
 import play.api.libs.ws.{WSClient, WSResponse}
 import models.JsonFormatters._
+import play.api.http.Status
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -21,4 +22,13 @@ class ApiDefinitionConnector @Inject()(appConfig: AppConfig, wsClient: WSClient)
       case r: WSResponse => throw new RuntimeException(s"Invalid response from tapi-definition ${r.status} ${r.body}")
     }
   }
+
+  def fetchApi(context: String, version: String): Future[APIDefinition] = {
+    wsClient.url(s"$serviceUrl/api-definition?context=$context&version=$version").get() map {
+      case response if response.status == Status.OK => Json.parse(response.body).as[APIDefinition]
+      case response if response.status == Status.NOT_FOUND => throw ApiNotFoundException()
+      case r: WSResponse => throw new RuntimeException(s"Invalid response from tapi-definition ${r.status} ${r.body}")
+    }
+  }
+
 }

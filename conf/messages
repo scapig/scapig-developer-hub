@@ -1,0 +1,5 @@
+application.name.invalid.field=Choose an application name between 2 and 50 characters
+emailaddress.error.required.field=Provide your email address
+emailaddress.error.not.valid.field=Provide a valid email address
+emailaddress.error.maxLength.field=Provide an email address with fewer than 320 characters
+loginpassword.error.required.field=Provide your password

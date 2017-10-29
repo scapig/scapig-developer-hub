@@ -40,9 +40,9 @@ class ApiDefinitionConnectorSpec extends UnitSpec with BeforeAndAfterAll with Be
     val apiDefinitionConnector = playApplication.injector.instanceOf[ApiDefinitionConnector]
   }
 
-  "findAll" should {
+  "fetchAllApis" should {
     "return all the API Definition" in new Setup {
-      stubFor(get(s"/apis").willReturn(aResponse()
+      stubFor(get("/apis").willReturn(aResponse()
         .withStatus(Status.OK)
         .withBody(Json.toJson(Seq(api)).toString())))
 
@@ -51,4 +51,30 @@ class ApiDefinitionConnectorSpec extends UnitSpec with BeforeAndAfterAll with Be
       result shouldBe Seq(api)
     }
   }
+
+  "fetchApi" should {
+    "return the API" in new Setup {
+      stubFor(get(urlPathEqualTo("/api-definition"))
+        .withQueryParam("context", equalTo("aContext"))
+        .withQueryParam("version", equalTo("v1"))
+        .willReturn(aResponse()
+        .withStatus(Status.OK)
+        .withBody(Json.toJson(api).toString())))
+
+      val result = await(apiDefinitionConnector.fetchApi("aContext", "v1"))
+
+      result shouldBe api
+    }
+
+    "fail with APINotFoundException when the API does not exist" in new Setup {
+      stubFor(get(urlPathEqualTo("/api-definition"))
+        .withQueryParam("context", equalTo("aContext")).withQueryParam("version", equalTo("v1"))
+        .willReturn(aResponse()
+          .withStatus(Status.NOT_FOUND)))
+
+      intercept[ApiNotFoundException]{await(apiDefinitionConnector.fetchApi("aContext", "v1"))}
+    }
+
+  }
+
 }

@@ -33,7 +33,7 @@ class ManageApplicationController  @Inject()(cc: ControllerComponents, applicati
       tab match {
         case Some(`APP_SUBSCRIPTIONS_TAB`) => Ok(views.html.applications.applicationSubscriptions(applicationViewData))
         case Some(`APP_CREDENTIALS_TAB`) => Ok(views.html.applications.applicationCredentials(applicationViewData))
-        case _ => Ok(views.html.applications.applicationDetails(applicationViewData, EditApplicationForm.form))
+        case _ => Ok(views.html.applications.applicationDetails(applicationViewData, EditApplicationForm.form.fill(EditApplicationForm(applicationViewData.app))))
       }
     } recover {
       case _: ApplicationNotFoundException => Results.NotFound("Application not found")
@@ -108,6 +108,8 @@ case class EditApplicationForm(applicationName: String,
                                rateLimitTier: String)
 
 object EditApplicationForm {
+
+  def apply(app: Application): EditApplicationForm = EditApplicationForm(app.name, Some(app.description), app.redirectUris,app.rateLimitTier.toString)
 
   val form: Form[EditApplicationForm] = Form(
     mapping(

@@ -53,7 +53,7 @@ object CreateApplicationRequest {
 
 case class UpdateApplicationRequest(name: String,
                                     description: String,
-                                    redirectUri: Seq[String],
+                                    redirectUris: Seq[String],
                                     rateLimitTier: RateLimitTier.Value)
 
 object UpdateApplicationRequest {

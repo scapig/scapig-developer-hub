@@ -6,6 +6,7 @@ POST    /applications/add               @controllers.ManageApplicationController
 
 GET     /applications                   @controllers.ManageApplicationController.manageApps()
 GET     /applications/:id               @controllers.ManageApplicationController.editApplication(id: String, tab: Option[String])
+POST    /applications/:id               @controllers.ManageApplicationController.updateApplicationAction(id: String)
 
 POST    /applications/:id/subscribe    @controllers.ManageApplicationController.subscribe(id: String, context: String, version: String)
 POST    /applications/:id/unsubscribe  @controllers.ManageApplicationController.unsubscribe(id: String, context: String, version: String)

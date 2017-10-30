@@ -12,7 +12,7 @@
             <br/>
             <a href="/applications/@applicationView.app.id?tab=APP_CREDENTIALS_TAB">Credentials</a>
             <p>
-                @helper.form(action = controllers.routes.ManageApplicationController.createApplicationAction) {
+                @helper.form(action = controllers.routes.ManageApplicationController.updateApplicationAction(applicationView.app.id.toString)) {
                     @CSRF.formField
 
                     @if(form.hasErrors) {
@@ -30,12 +30,16 @@
                     <label for="description"><strong>Description</strong> (optional)</label>
                     <textarea id="description" name="description" maxLength="250">@form.data.get("description")</textarea>
 
-                    <label for="redirectUris"><strong>RedirectUris</strong></label>
-                    @applicationView.app.redirectUris
+                    <label for="redirectUris"><strong>Redirect Uris</strong></label>
+                    <input type="text" id="redirectUris[0]" name="redirectUris[]" value="@form.data.get("redirectUris[0]")" maxLength="50"/>
+                    <input type="text" id="redirectUris[1]" name="redirectUris[]" value="@form.data.get("redirectUris[1]")" maxLength="50"/>
+                    <input type="text" id="redirectUris[2]" name="redirectUris[]" value="@form.data.get("redirectUris[2]")" maxLength="50"/>
 
-                    <label for="rateLimitTiers"><strong>Rate Limit Tiers</strong></label>
-                    <input type="text" id="rateLimitTiers" name="rateLimitTiers" value="@form.data.get("rateLimitTiers")" maxLength="50"/>
-                }
+                    <label for="rateLimitTier"><strong>Rate Limit Tier</strong></label>
+                    <input type="text" id="rateLimitTier" name="rateLimitTier" value="@form.data.get("rateLimitTier")" maxLength="50"/>
+
+                    <button id="save" type="submit" role="button">Save</button>
+            }
             </p>
         </body>
     </html>

@@ -1,0 +1,57 @@
+@(title: String, html: Html)
+<html>
+    <head><title>Application</title></head>
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css">
+
+    <body>
+        <header>
+            <div id ="global-header">
+                <div class="header-wrapper">
+                    <div class="header-global">
+                        <div class="header-logo">
+                            My Logo
+                        </div>
+                    </div>
+                    <div class="header-proposition">
+                        <div class="content">
+                            <nav id="proposition-menu" class="header__menu" role="navigation">
+                                <a href="https://developer.service.hmrc.gov.uk/api-documentation" class="header__menu__proposition-name">HMRC Developer Hub</a>
+                                <ul id="proposition-links" class="header__menu__proposition-links">
+                                    <li>
+                                        <a class="align--middle inline-block " href="/api-documentation/docs/using-the-hub">Documentation</a>
+                                    </li>
+                                    <li>
+                                        <a class="align--middle inline-block " href="/developer/applications">Applications</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="centered-content">
+                <div class="service-info ">
+                    <div id="user-nav-links" class="header__menu__proposition--sub-header">
+                        <ul class="header__menu__proposition-links">
+                            <li>
+                                <a class="align--middle inline-block link-style" href="/developer/profile">Thomas VANDEVELDE</a>
+                            </li>
+                            <li class="hard--right">
+                                <a class="align--middle inline-block link-style" href="/developer/logout/survey">Sign out</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <main id="wrapper">
+            <div class="centered-content">
+                <h1>Application</h1>
+
+                <div class="grid-layout__column--2-3">
+                    @html
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

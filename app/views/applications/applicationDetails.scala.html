@@ -3,43 +3,43 @@
 
 @(applicationView: ApplicationViewData, form: Form[controllers.EditApplicationForm])(implicit request: play.api.mvc.Request[Any], messages: Messages)
 
-    <html>
-        <head><title>Application @{applicationView.app.name}</title></head>
-        <body>
-            <a href="/applications/@applicationView.app.id">Application Details</a>
-            <br/>
-            <a href="/applications/@applicationView.app.id?tab=APP_SUBSCRIPTIONS_TAB">Subscriptions</a>
-            <br/>
-            <a href="/applications/@applicationView.app.id?tab=APP_CREDENTIALS_TAB">Credentials</a>
-            <p>
-                @helper.form(action = controllers.routes.ManageApplicationController.updateApplicationAction(applicationView.app.id.toString)) {
-                    @CSRF.formField
+@body = {
+    <a href="/applications/@applicationView.app.id">Application Details</a>
+    <br/>
+    <a href="/applications/@applicationView.app.id?tab=APP_SUBSCRIPTIONS_TAB">Subscriptions</a>
+    <br/>
+    <a href="/applications/@applicationView.app.id?tab=APP_CREDENTIALS_TAB">Credentials</a>
+    <p>
+    @helper.form(action = controllers.routes.ManageApplicationController.updateApplicationAction(applicationView.app.id.toString)) {
+        @CSRF.formField
 
-                    @if(form.hasErrors) {
-                        There are errors on the page.
-                        <ul>
-                            @for(error <- form.errors) {
-                                <li>@Messages(error.message)</li>
-                            }
-                        </ul>
-                    }
+        @if(form.hasErrors) {
+            There are errors on the page.
+<ul>
+@for(error <- form.errors) {
+    <li>@Messages(error.message)</li>
+}
+</ul>
+}
 
-                    <label for="applicationName"><strong>Application name</strong></label>
-                    <input type="text" id="applicationName" name="applicationName" value="@form.data.get("applicationName")" maxLength="50"/>
+    <label for="applicationName"><strong>Application name</strong></label>
+    <input type="text" id="applicationName" name="applicationName" value="@form.data.get("applicationName")" maxLength="50"/>
 
-                    <label for="description"><strong>Description</strong> (optional)</label>
-                    <textarea id="description" name="description" maxLength="250">@form.data.get("description")</textarea>
+    <label for="description"><strong>Description</strong> (optional)</label>
+    <textarea id="description" name="description" maxLength="250">@form.data.get("description")</textarea>
 
-                    <label for="redirectUris"><strong>Redirect Uris</strong></label>
-                    <input type="text" id="redirectUris[0]" name="redirectUris[]" value="@form.data.get("redirectUris[0]")" maxLength="50"/>
-                    <input type="text" id="redirectUris[1]" name="redirectUris[]" value="@form.data.get("redirectUris[1]")" maxLength="50"/>
-                    <input type="text" id="redirectUris[2]" name="redirectUris[]" value="@form.data.get("redirectUris[2]")" maxLength="50"/>
+    <label for="redirectUris"><strong>Redirect Uris</strong></label>
+    <input type="text" id="redirectUris[0]" name="redirectUris[]" value="@form.data.get("redirectUris[0]")" maxLength="50"/>
+    <input type="text" id="redirectUris[1]" name="redirectUris[]" value="@form.data.get("redirectUris[1]")" maxLength="50"/>
+    <input type="text" id="redirectUris[2]" name="redirectUris[]" value="@form.data.get("redirectUris[2]")" maxLength="50"/>
 
-                    <label for="rateLimitTier"><strong>Rate Limit Tier</strong></label>
-                    <input type="text" id="rateLimitTier" name="rateLimitTier" value="@form.data.get("rateLimitTier")" maxLength="50"/>
+    <label for="rateLimitTier"><strong>Rate Limit Tier</strong></label>
+    <input type="text" id="rateLimitTier" name="rateLimitTier" value="@form.data.get("rateLimitTier")" maxLength="50"/>
 
-                    <button id="save" type="submit" role="button">Save</button>
-            }
-            </p>
-        </body>
-    </html>
+    <button id="save" type="submit" role="button">Save</button>
+}
+    </p>
+
+}
+
+@include.template(s"Application " + applicationView.app.name, body)

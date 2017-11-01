@@ -1,0 +1,147 @@
+#global-header {
+    background-color: #0b0c0c;
+    width: 100%;
+}
+
+#global-header .header-wrapper {
+    max-width: 990px;
+    margin: 0 auto;
+    padding: 0.5em 15px;
+}
+
+body {
+    font-size: 160%;
+    font-family: "nta",Arial,sans-serif;
+    color: #0b0c0c;
+    line-height: 1.5;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+}
+
+#global-header .header-wrapper .header-global {
+    float: left;
+    width: 33.33%;
+}
+
+#global-header .header-wrapper .header-proposition {
+    width: 66.66%;
+    float: left;
+}
+
+div {
+    display: block;
+}
+
+#global-header .header-wrapper:after, #global-header .header-wrapper .header-global:after, #global-header .header-wrapper .header-global .header-logo:after, #global-header .header-proposition #proposition-links:after {
+    content: "";
+    display: block;
+    clear: both;
+}
+
+.header__menu__proposition-name {
+    font-family: "nta",Arial,sans-serif;
+    font-size: 24px;
+    line-height: 1.25;
+    font-weight: 400;
+    text-transform: none;
+    text-decoration: none;
+    color: #fff;
+}
+
+#global-header .header-proposition #proposition-links li a {
+    font-family: "nta", Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.25;
+    font-weight: 300;
+    text-transform: none;
+}
+
+#global-header .header-proposition #proposition-links li a {
+    color: white;
+    text-decoration: none;
+}
+
+.inline-block {
+    display: inline-block !important;
+}
+
+.align--middle {
+    vertical-align: middle !important;
+}
+
+li {
+    display: list-item;
+    text-align: -webkit-match-parent;
+}
+
+#global-header .header-proposition #proposition-links li {
+    float: left;
+    display: block;
+    width: auto;
+    padding: 0 15px 0 0;
+    border-bottom: 0;
+}
+
+#global-header #logo {
+    float: left;
+    position: relative;
+    top: 1px;
+    height: 30px;
+    overflow: visible;
+    vertical-align: baseline;
+    color: white;
+    font-weight: bold;
+    font-size: 30px;
+    line-height: 1em;
+    text-decoration: none;
+    text-rendering: optimizeLegibility;
+    margin-bottom: -1px;
+    padding-bottom: 1px;
+}
+
+.centered-content {
+    display: block;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0em .78947em 0em .78947em;
+    line-height: 1.5;
+    font-family: "nta",Arial,sans-serif;
+    font-size: 19px;
+    font-weight: 400;
+    text-transform: none;
+}
+
+ul, menu, dir {
+    display: block;
+    list-style-type: disc;
+    -webkit-margin-before: 0.5em;
+    -webkit-margin-after: 0.5em;
+    -webkit-padding-start: 0.5em;
+}
+
+.service-info {
+    border-top: 10px solid #005ea5;
+    padding: 30px 0 0 0;
+    border-bottom: 1px solid #bfc1c3;
+}
+
+#wrapper {
+    padding-bottom: 90px;
+    text-align: left;
+}
+
+.service-info .header__menu__proposition-links {
+    float: right;
+    margin-top: -1.5em;
+}
+
+.service-info .header__menu__proposition-links .link-style {
+    color: #005ea5;
+    font-weight: normal;
+    text-decoration: underline;
+}
+
+.header__menu__proposition-links li {
+    display: inline;
+    padding-right: .78947em;
+}

@@ -49,32 +49,38 @@
                 </div>
             </header>
             <main id="wrapper">
-            <table class="app">
-                <colgroup>
-                    <col width="25%"/>
-                    <col width="50%"/>
-                    <col width="25%"/>
-                </colgroup>
-                <thead>
-                    <th>Name</th>
-                    <th>Description</th>
-                    <th>Role</th>
-                </thead>
-                <a href="@{routes.ManageApplicationController.createApplicationForm()}">Add an application</a>
+                <div class="centered-content">
+                    <h1>Manage Applications</h1>
 
-                @for(app<-applications) {
-                    <tr>
-                        <td>
-                            <a href="@{routes.ManageApplicationController.editApplication(app.id, None)}">@app.name</a>
-                        </td>
-                        <td>@app.description</td>
-                        <td>
-                            @if(app.role == Role.ADMINISTRATOR) {Admin}
-                            @if(app.role == Role.DEVELOPER) {Developer}
-                        </td>
-                    </tr>
-                }
-            </table>
+                    <div class="grid-layout__column--2-3">
+                        <a class="button" href="@{routes.ManageApplicationController.createApplicationForm()}">Add an application</a>
+                        <table class="app">
+                            <colgroup>
+                                <col width="25%"/>
+                                <col width="50%"/>
+                                <col width="25%"/>
+                            </colgroup>
+                            <thead>
+                                <th>Name</th>
+                                <th>Description</th>
+                                <th>Role</th>
+                            </thead>
+
+                            @for(app<-applications) {
+                                <tr>
+                                    <td>
+                                        <a href="@{routes.ManageApplicationController.editApplication(app.id, None)}">@app.name</a>
+                                    </td>
+                                    <td>@app.description</td>
+                                    <td>
+                                        @if(app.role == Role.ADMINISTRATOR) {Admin}
+                                        @if(app.role == Role.DEVELOPER) {Developer}
+                                    </td>
+                                </tr>
+                            }
+                        </table>
+                    </div>
+                </div>
             </main>
         </body>
     </html>

@@ -145,3 +145,70 @@ ul, menu, dir {
     display: inline;
     padding-right: .78947em;
 }
+
+button:link, button:hover, button:focus, button:visited, .button:link, .button--get-started:link, .button:hover, .button--get-started:hover, .button:focus, .button--get-started:focus, .button:visited, .button--get-started:visited {
+    color: #fff;
+}
+
+button, .button {
+    text-transform: capitalize;
+    background-color: #00823b;
+    position: relative;
+    display: -moz-inline-stack;
+    display: inline-block;
+    padding: 0.35em 0.5em 0.15em 0.5em;
+    border: none;
+    border-radius: 0;
+    -webkit-appearance: none;
+    box-shadow: 0 2px 0 #003618;
+    font-size: 1em;
+    line-height: 1.25;
+    text-decoration: none;
+    -webkit-font-smoothing: antialiased;
+    cursor: pointer;
+    color: #fff;
+    font-family: "nta",Arial,sans-serif;
+    font-size: 19px;
+    line-height: 1.31579;
+    font-weight: 400;
+    text-transform: none;
+    margin: 0 .78947em 0 0;
+}
+
+button:visited, .button:visited, .button--get-started:visited {
+    background-color: #00823b;
+}
+
+.button:link, .button--get-started:link, .button:hover, .button--get-started:hover, .button:focus, .button--get-started:focus, .button:visited, .button--get-started:visited {
+    color: #fff;
+}
+
+.button:visited, .button--get-started:visited {
+    background-color: #00823b;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    margin-bottom: 1.57895em;
+    width: 100%;
+}
+
+.grid-layout__column--2-3 {
+    width: 66.66667%;
+}
+
+table th {
+    font-weight: 700;
+}
+
+table th, table td {
+    font-family: "nta",Arial,sans-serif;
+    font-size: 16px;
+    line-height: 1.25;
+    text-transform: none;
+    padding: .73684em 1.05263em .52632em 0;
+    text-align: left;
+    color: #0b0c0c;
+    border-bottom: 1px solid #bfc1c3;
+}

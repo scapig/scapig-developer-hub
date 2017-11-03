@@ -212,3 +212,112 @@ table th, table td {
     color: #0b0c0c;
     border-bottom: 1px solid #bfc1c3;
 }
+
+.form-field-group, .form-field-single {
+    margin-bottom: 0.75em;
+    line-height: 1.6em;
+    clear: both;
+}
+
+.form-field {
+    float: left;
+    width: 100%;
+    margin: 0 0 1.57895em 0;
+}
+
+.label--full-length {
+    width: 100%;
+    clear: both;
+    display: inline-block;
+    margin-top: 0.2em;
+    min-width: 130px;
+}
+
+input {
+    font-family: "nta",Arial,sans-serif;
+    font-size: 19px;
+    line-height: 1.31579;
+    font-weight: 400;
+    text-transform: none;
+    background-color: #fff;
+    border: 2px solid #6f777b;
+    margin: 0;
+    padding: 0.1em 0 0.1em 0.4em;
+    box-sizing: border-box;
+}
+
+textarea {
+    font-family: "nta",Arial,sans-serif;
+    font-size: 19px;
+    line-height: 1.31579;
+    font-weight: 400;
+    text-transform: none;
+    background-color: #fff;
+    border: 2px solid #6f777b;
+    margin: .52632em 0;
+    padding: 0.1em 0 0.1em 0.4em;
+    box-sizing: border-box;
+}
+
+.error-notification {
+    color: #af1324;
+}
+
+.tabs-nav {
+    margin: 2em 0 1em 0;
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 0 !important;
+    width: 100%;
+}
+
+.tab {
+    display: inline-block;
+}
+
+.tabs-nav .tabs-nav__tab {
+    display: inline-block;
+    margin: 0 .15789em 0 0;
+    padding: 0.7em 0.8em;
+    border-top: none;
+}
+
+.tabs-nav .tabs-nav__tab--active {
+    height: 2.84211em;
+    padding: .7em .7em 1.7em .7em;
+    border: 1px solid #bfc1c3;
+    border-bottom: 0px;
+    z-index: 2;
+    color: #0b0c0c;
+    background-color: #fff;
+    transition: none;
+    position: relative;
+}
+
+ul {
+    display: block;
+    list-style-type: none;
+    padding: 0;
+}
+
+ul li {
+    font-family: "nta",Arial,sans-serif;
+    font-size: 19px;
+    line-height: 1.31579;
+    font-weight: 400;
+    text-transform: none;
+}
+
+.tabs-nav:before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    border-bottom: 1px solid #ccc;
+    z-index: 1;
+    width: 100%;
+}
+
+.tabs-nav .tabs-nav__tab:visited {
+    color: #005ea5;
+}

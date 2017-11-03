@@ -2,32 +2,33 @@
 
 @(form: Form[controllers.AddApplicationForm])(implicit request: play.api.mvc.Request[Any], messages: Messages)
 
-    <html>
-        <head><title>Add an application</title></head>
-        <body>
-            <h1>Add an application</h1>
-            <div>
-                @helper.form(action = controllers.routes.ManageApplicationController.createApplicationAction) {
-                    @CSRF.formField
+@body = {
+    <div>
+    @helper.form(action = controllers.routes.ManageApplicationController.createApplicationAction) {
+        @CSRF.formField
 
-                    @if(form.hasErrors) {
-                        There are errors on the page.
-                        <ul>
-                        @for(error <- form.errors) {
-                            <li>@Messages(error.message)</li>
-                        }
-                        </ul>
-                    }
+        @if(form.hasErrors) {
+            @for(error <- form.errors) {
+                <p class="error-notification">@Messages(error.message)</p>
+            }
+        }
 
-                    <label for="applicationName"><strong>Application name</strong></label>
-                    <input type="text" id="applicationName" name="applicationName" value="@form.data.get("applicationName")" maxLength="50"/>
-
-                    <label for="description"><strong>Description</strong> (optional)</label>
-                    <textarea id="description" name="description" maxLength="250">@form.data.get("description")</textarea>
-
-                    <button id="add" type="submit" role="button">Add</button>
-                    <a href="@routes.ManageApplicationController.manageApps" >Cancel</a>
-                }
+        <div class="form-field-group">
+            <div class="form-field">
+                <label for="applicationName" class="label--full-length"><strong>Application name</strong></label>
+                <input type="text" id="applicationName" name="applicationName" value="@form.data.get("applicationName")" maxLength="50"/>
             </div>
-        </body>
-    </html>
+
+            <div class="form-field">
+                <label for="description" class="label--full-length"><strong>Description</strong> (optional)</label>
+                <textarea id="description" name="description" maxLength="250">@form.data.get("description")</textarea>
+            </div>
+
+            <button id="add" type="submit" role="button">Add</button>
+            <a href="@routes.ManageApplicationController.manageApps" >Cancel</a>
+        </div>
+    }
+    </div>
+}
+
+@include.template("Add an application", body)

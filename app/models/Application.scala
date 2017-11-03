@@ -37,7 +37,7 @@ case class ClientSecret(secret: String,
 
 object RateLimitTier extends Enumeration {
   type RateLimitTier = Value
-  val GOLD, SILVER, BRONZE = Value
+  val BRONZE, SILVER, GOLD  = Value
 }
 
 case class CreateApplicationRequest(name: String,

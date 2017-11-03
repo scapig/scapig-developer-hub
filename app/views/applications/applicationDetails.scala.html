@@ -4,42 +4,54 @@
 @(applicationView: ApplicationViewData, form: Form[controllers.EditApplicationForm])(implicit request: play.api.mvc.Request[Any], messages: Messages)
 
 @body = {
-    <a href="/applications/@applicationView.app.id">Application Details</a>
-    <br/>
-    <a href="/applications/@applicationView.app.id?tab=APP_SUBSCRIPTIONS_TAB">Subscriptions</a>
-    <br/>
-    <a href="/applications/@applicationView.app.id?tab=APP_CREDENTIALS_TAB">Credentials</a>
+    <div>
+    <ul class="tabs-nav">
+        <li aria-selected="false" role="tab" class="tab" aria-controls="subscriptions" tabindex="0"><span class="tabs-nav__tab--active">Application Details</span></li>
+        <li aria-selected="false" role="tab" class="tab" aria-controls="subscriptions" tabindex="1"><a class="tabs-nav__tab" href="/applications/@applicationView.app.id?tab=APP_SUBSCRIPTIONS_TAB">Subscriptions</a></li>
+        <li aria-selected="false" role="tab" class="tab" aria-controls="subscriptions" tabindex="2"><a class="tabs-nav__tab" href="/applications/@applicationView.app.id?tab=APP_CREDENTIALS_TAB">Credentials</a></li>
+    </ul>
     <p>
     @helper.form(action = controllers.routes.ManageApplicationController.updateApplicationAction(applicationView.app.id.toString)) {
         @CSRF.formField
 
         @if(form.hasErrors) {
-            There are errors on the page.
-<ul>
-@for(error <- form.errors) {
-    <li>@Messages(error.message)</li>
-}
-</ul>
-}
+            @for(error <- form.errors) {
+                <p class="error-notification">@Messages(error.message)</p>
+            }
+        }
 
-    <label for="applicationName"><strong>Application name</strong></label>
-    <input type="text" id="applicationName" name="applicationName" value="@form.data.get("applicationName")" maxLength="50"/>
+        <div class="form-field-group">
+            <div class="form-field">
+                <label for="applicationName" class="label--full-length"><strong>Application name</strong></label>
+                <input type="text" id="applicationName" name="applicationName" value="@form.data.get("applicationName")" maxLength="50"/>
+            </div>
 
-    <label for="description"><strong>Description</strong> (optional)</label>
-    <textarea id="description" name="description" maxLength="250">@form.data.get("description")</textarea>
+            <div class="form-field">
+                <label for="description" class="label--full-length"><strong>Description</strong> (optional)</label>
+                <textarea id="description" name="description" maxLength="250">@form.data.get("description")</textarea>
+            </div>
 
-    <label for="redirectUris"><strong>Redirect Uris</strong></label>
-    <input type="text" id="redirectUris[0]" name="redirectUris[]" value="@form.data.get("redirectUris[0]")" maxLength="50"/>
-    <input type="text" id="redirectUris[1]" name="redirectUris[]" value="@form.data.get("redirectUris[1]")" maxLength="50"/>
-    <input type="text" id="redirectUris[2]" name="redirectUris[]" value="@form.data.get("redirectUris[2]")" maxLength="50"/>
+            <div class="form-field">
+                <label for="redirectUris" class="label--full-length"><strong>Redirect Uris</strong></label>
+                <input type="text" id="redirectUris[0]" name="redirectUris[]" value="@form.data.get("redirectUris[0]")" maxLength="50"/><br/>
+                <input type="text" id="redirectUris[1]" name="redirectUris[]" value="@form.data.get("redirectUris[1]")" maxLength="50"/><br/>
+                <input type="text" id="redirectUris[2]" name="redirectUris[]" value="@form.data.get("redirectUris[2]")" maxLength="50"/>
+            </div>
 
-    <label for="rateLimitTier"><strong>Rate Limit Tier</strong></label>
-    <input type="text" id="rateLimitTier" name="rateLimitTier" value="@form.data.get("rateLimitTier")" maxLength="50"/>
+            <div class="form-field">
+                <label for="rateLimitTier" class="label--full-length"><strong>Rate Limit Tier</strong></label>
+                <select id="rateLimitTier" name="rateLimitTier" value="@form.data.get("rateLimitTier")">
+                    @for(tier <- RateLimitTier.values) {
+                        <option @if(form.data.get("rateLimitTier").contains(tier.toString)) {selected} value="@tier">@tier</option>
+                    }
+                </select>
+            </div>
+        </div>
 
-    <button id="save" type="submit" role="button">Save</button>
-}
+        <button id="save" type="submit" role="button">Save</button>
+    }
     </p>
-
+    </div>
 }
 
 @include.template(s"Application " + applicationView.app.name, body)

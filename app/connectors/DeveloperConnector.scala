@@ -39,6 +39,20 @@ class DeveloperConnector @Inject()(appConfig: AppConfig, wsClient: WSClient) {
     }
   }
 
+  def fetchDeveloper(email: String): Future[Developer] = {
+    wsClient.url(s"$serviceUrl/developer?email=$email").get() map {
+      case response if response.status == Status.OK => Json.parse(response.body).as[Developer]
+      case r: WSResponse => throw new RuntimeException(s"Invalid response from tapi-developer ${r.status} ${r.body}")
+    }
+  }
+
+  def updateProfile(email: String, userProfileEditRequest: UserProfileEditRequest): Future[HasSucceeded] = {
+    wsClient.url(s"$serviceUrl/developer/$email").post(Json.toJson(userProfileEditRequest)) map {
+      case response if response.status == Status.OK => HasSucceeded
+      case r: WSResponse => throw new RuntimeException(s"Invalid response from tapi-developer ${r.status} ${r.body}")
+    }
+  }
+
   def deleteSession(sessionId: String): Future[HasSucceeded] = {
     wsClient.url(s"$serviceUrl/session/$sessionId").delete() map {
       case response if response.status == Status.NO_CONTENT => HasSucceeded

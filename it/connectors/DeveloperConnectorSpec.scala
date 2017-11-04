@@ -98,6 +98,37 @@ class DeveloperConnectorSpec extends UnitSpec with BeforeAndAfterAll with Before
 
   }
 
+  "fetchDeveloper" should {
+    "return the developer" in new Setup {
+      stubFor(get(urlPathEqualTo("/developer")).withQueryParam("email", equalTo(developer.email))
+        .willReturn(aResponse()
+          .withStatus(Status.OK)
+          .withBody(Json.toJson(developer).toString())))
+
+      val result = await(developerConnector.fetchDeveloper(developer.email))
+
+      result shouldBe developer
+    }
+
+  }
+
+  "updateProfile" should {
+    val userProfileEditRequest = UserProfileEditRequest("newFirstName", "newLastName")
+    val updatedDeveloper = developer.copy(firstName = "newFirstName", lastName = "newLastName")
+
+    "update the user profile" in new Setup {
+      stubFor(post(urlPathEqualTo(s"/developer/${developer.email}")).withRequestBody(equalToJson(Json.toJson(userProfileEditRequest).toString()))
+        .willReturn(aResponse()
+          .withStatus(Status.OK)
+          .withBody(Json.toJson(updatedDeveloper).toString())))
+
+      val result = await(developerConnector.updateProfile(developer.email, userProfileEditRequest))
+
+      result shouldBe HasSucceeded
+    }
+
+  }
+
   "deleteSession" should {
     "delete the session" in new Setup {
       stubFor(delete(s"/session/$sessionId").willReturn(aResponse()

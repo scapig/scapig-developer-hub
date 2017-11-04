@@ -66,13 +66,22 @@ class ManageApplicationControllerSpec extends UnitSpec with MockitoSugar {
       bodyOf(result) should include(apiSubscription.apiName)
     }
 
-    "display the application credentials when tab is APP_CREDENTIALS_TAB" in new Setup {
+    "display the production credentials when tab is PRODUCTION_CREDENTIALS_TAB" in new Setup {
       given(applicationService.fetchApplicationViewData(applicationId)).willReturn(successful(applicationViewData))
 
-      val result = await(underTest.editApplication(applicationId, Some("APP_CREDENTIALS_TAB"))(request))
+      val result = await(underTest.editApplication(applicationId, Some("PRODUCTION_CREDENTIALS_TAB"))(request))
 
       status(result) shouldBe Status.OK
-      bodyOf(result) should (include(application.credentials.production.clientId) and include(application.credentials.sandbox.clientId))
+      bodyOf(result) should (include(application.credentials.production.clientId) and not include application.credentials.sandbox.clientId)
+    }
+
+    "display the sandbox credentials when tab is SANDBOX_CREDENTIALS_TAB" in new Setup {
+      given(applicationService.fetchApplicationViewData(applicationId)).willReturn(successful(applicationViewData))
+
+      val result = await(underTest.editApplication(applicationId, Some("SANDBOX_CREDENTIALS_TAB"))(request))
+
+      status(result) shouldBe Status.OK
+      bodyOf(result) should (include(application.credentials.sandbox.clientId) and not include application.credentials.production.clientId)
     }
 
     "display application not found when the application does not exist" in new Setup {

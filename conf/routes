@@ -13,3 +13,6 @@ POST    /applications/:id/unsubscribe  @controllers.ManageApplicationController.
 
 GET     /login                          @controllers.LoginController.showLoginPage()
 POST    /login                          @controllers.LoginController.login()
+
+GET     /profile                        @controllers.ProfileController.showProfileForm()
+POST    /profile                        @controllers.ProfileController.editProfileAction()

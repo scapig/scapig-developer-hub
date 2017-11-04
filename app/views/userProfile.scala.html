@@ -1,0 +1,33 @@
+@import helper._
+
+@(form: Form[controllers.EditProfileForm])(implicit request: play.api.mvc.Request[Any], messages: Messages)
+
+@body = {
+    <div>
+    @helper.form(action = controllers.routes.ProfileController.editProfileAction) {
+        @CSRF.formField
+
+        @if(form.hasErrors) {
+            @for(error <- form.errors) {
+                <p class="error-notification">@Messages(error.message)</p>
+            }
+        }
+
+        <div class="form-field-group">
+            <div class="form-field">
+                <label for="firstName" class="label--full-length"><strong>First name</strong></label>
+                <input type="text" id="firstName" name="firstName" value="@form.data.get("firstName")" maxLength="50"/>
+            </div>
+
+            <div class="form-field">
+                <label for="lastName" class="label--full-length"><strong>Last name</strong></label>
+                <input type="text" id="lastName" name="lastName" value="@form.data.get("lastName")" maxLength="50"/>
+            </div>
+
+            <button class="button" id="add" type="submit" role="button">Save</button>
+        </div>
+    }
+    </div>
+}
+
+@include.template("User Profile", body)

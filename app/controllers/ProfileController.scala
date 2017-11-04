@@ -2,9 +2,11 @@ package controllers
 
 import javax.inject.{Inject, Singleton}
 
-import models.UserProfileEditRequest
+import controllers.FormKeys.{emailAlreadyRegisteredKey, passwordNoMatchKey}
+import models.{UserAlreadyRegisteredException, UserCreateRequest, UserProfileEditRequest}
 import play.api.data.Form
 import play.api.data.Forms.{mapping, text}
+import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{AbstractController, ControllerComponents}
 import services.SessionService
@@ -19,7 +21,7 @@ class ProfileController  @Inject()(cc: ControllerComponents, sessionService: Ses
   def showProfileForm() = Action.async { implicit request =>
     val email = "admin@app.com"
     sessionService.fetchDeveloper(email) map { developer =>
-      Ok(views.html.userProfile(EditProfileForm.form.fill(EditProfileForm(developer.firstName, developer.lastName))))
+      Ok(views.html.user.userProfile(EditProfileForm.form.fill(EditProfileForm(developer.firstName, developer.lastName))))
     }
   }
 
@@ -28,7 +30,7 @@ class ProfileController  @Inject()(cc: ControllerComponents, sessionService: Ses
     val email = "admin@app.com"
 
     def editProfileWithFormErrors(errors: Form[EditProfileForm]) = {
-      Future.successful(BadRequest(views.html.userProfile(errors)))
+      Future.successful(BadRequest(views.html.user.userProfile(errors)))
     }
 
     def editProfileWithValidForm(validForm: EditProfileForm) = {
@@ -37,6 +39,25 @@ class ProfileController  @Inject()(cc: ControllerComponents, sessionService: Ses
     }
 
     EditProfileForm.form.bindFromRequest.fold(editProfileWithFormErrors, editProfileWithValidForm)
+  }
+
+  def showRegistrationForm() = Action.async { implicit request =>
+    Future(Ok(views.html.user.register(RegisterForm.form)))
+  }
+
+  def registerAction() = Action.async { implicit request =>
+    def registerWithFormErrors(errors: Form[RegisterForm]) = {
+      Future.successful(BadRequest(views.html.user.register(errors)))
+    }
+
+    def registerWithValidForm(validForm: RegisterForm) = {
+      sessionService.register(UserCreateRequest(validForm.email, validForm.password, validForm.firstName, validForm.lastName))
+        .map(_ => Redirect(routes.ProfileController.showProfileForm())) recover {
+        case _: UserAlreadyRegisteredException => BadRequest(views.html.user.register(RegisterForm.form.fill(validForm).withGlobalError(emailAlreadyRegisteredKey)))
+      }
+    }
+
+    RegisterForm.form.bindFromRequest.fold(registerWithFormErrors, registerWithValidForm)
   }
 }
 
@@ -50,4 +71,25 @@ object EditProfileForm {
       "lastName" -> text
     )(EditProfileForm.apply)(EditProfileForm.unapply)
   )
+}
+
+case class RegisterForm(email: String, firstName: String, lastName: String, password: String, confirmPassword: String)
+
+object RegisterForm {
+
+  val form: Form[RegisterForm] = Form(
+    mapping(
+      "email" -> emailValidator,
+      "firstName" -> requiredValidator(FormKeys.firstNameRequiredKey),
+      "lastName" -> requiredValidator(FormKeys.lastNameRequiredKey),
+      "password" -> requiredValidator(FormKeys.passwordRequiredKey),
+      "confirmPassword" -> text
+    )(RegisterForm.apply)(RegisterForm.unapply).verifying(passwordsMatch)
+  )
+
+  def passwordsMatch = Constraint[RegisterForm]("password") {
+    case (rf) if rf.password != rf.confirmPassword => Invalid(ValidationError(passwordNoMatchKey))
+    case _ => Valid
+  }
+
 }

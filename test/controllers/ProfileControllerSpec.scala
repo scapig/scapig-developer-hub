@@ -11,7 +11,8 @@ import play.api.test.{FakeRequest, Helpers}
 import services.SessionService
 import utils.UnitSpec
 
-import scala.concurrent.Future.successful
+import scala.concurrent.Future
+import scala.concurrent.Future.{failed, successful}
 
 class ProfileControllerSpec extends UnitSpec with MockitoSugar {
 
@@ -50,4 +51,63 @@ class ProfileControllerSpec extends UnitSpec with MockitoSugar {
       verify(sessionService).updateUserProfile(userEmail, UserProfileEditRequest("newFirstName", "newLastName"))
     }
   }
+
+  "showRegistrationForm" should {
+    "display the user registration form" in new Setup {
+      val result = await(underTest.showRegistrationForm()(addCSRFToken(request)))
+
+      status(result) shouldBe Status.OK
+      bodyOf(result) should include("Register")
+    }
+  }
+
+  "registerAction" should {
+    "save the user and redirect to the user profile" in new Setup {
+      given(sessionService.register(any())).willReturn(successful(developer))
+
+      val result = await(underTest.registerAction()(addCSRFToken(request.withFormUrlEncodedBody(
+        "email" -> userEmail,
+        "firstName" -> "John",
+        "lastName" -> "Doe",
+        "password" -> "Password",
+        "confirmPassword" -> "Password"
+      ))))
+
+      status(result) shouldBe Status.SEE_OTHER
+      result.header.headers("Location") shouldBe "/profile"
+      verify(sessionService).register(UserCreateRequest(userEmail, "Password", "John", "Doe"))
+    }
+
+    "validate that the 2 passwords are similar" in new Setup {
+      given(sessionService.register(any())).willReturn(successful(developer))
+
+      val result = await(underTest.registerAction()(addCSRFToken(request.withFormUrlEncodedBody(
+        "email" -> userEmail,
+        "firstName" -> "John",
+        "lastName" -> "Doe",
+        "password" -> "Password",
+        "confirmPassword" -> "anotherPassword"
+      ))))
+
+      status(result) shouldBe Status.BAD_REQUEST
+      bodyOf(result) should include ("password.error.no.match.global")
+    }
+
+    "return an error message when the user is already registered" in new Setup {
+      given(sessionService.register(any())).willReturn(failed(UserAlreadyRegisteredException()))
+
+      val result = await(underTest.registerAction()(addCSRFToken(request.withFormUrlEncodedBody(
+        "email" -> userEmail,
+        "firstName" -> "John",
+        "lastName" -> "Doe",
+        "password" -> "Password",
+        "confirmPassword" -> "Password"
+      ))))
+
+      status(result) shouldBe Status.BAD_REQUEST
+      bodyOf(result) should include ("emailaddress.already.registered.global")
+    }
+
+  }
+
 }

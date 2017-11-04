@@ -1,0 +1,48 @@
+@import helper._
+
+@(form: Form[controllers.RegisterForm])(implicit request: play.api.mvc.Request[Any], messages: Messages)
+
+@body = {
+    <div>
+    @helper.form(action = controllers.routes.ProfileController.registerAction) {
+        @CSRF.formField
+
+        @if(form.hasErrors) {
+            @for(error <- form.errors) {
+                <p class="error-notification">@Messages(error.message)</p>
+            }
+        }
+
+        <div class="form-field-group">
+            <div class="form-field">
+                <label for="email" class="label--full-length"><strong>Email</strong></label>
+                <input type="text" id="email" name="email" value="@form.data.get("email")" maxLength="50"/>
+            </div>
+
+            <div class="form-field">
+                <label for="firstName" class="label--full-length"><strong>First name</strong></label>
+                <input type="text" id="firstName" name="firstName" value="@form.data.get("firstName")" maxLength="50"/>
+            </div>
+
+            <div class="form-field">
+                <label for="lastName" class="label--full-length"><strong>Last name</strong></label>
+                <input type="text" id="lastName" name="lastName" value="@form.data.get("lastName")" maxLength="50"/>
+            </div>
+
+            <div class="form-field">
+                <label for="password" class="label--full-length"><strong>Password</strong></label>
+                <input type="text" id="password" name="password" value="@form.data.get("password")" maxLength="50"/>
+            </div>
+
+            <div class="form-field">
+                <label for="confirmPassword" class="label--full-length"><strong>Confirm Password</strong></label>
+                <input type="text" id="confirmPassword" name="confirmPassword" value="@form.data.get("confirmPassword")" maxLength="50"/>
+            </div>
+
+            <button class="button" id="add" type="submit" role="button">Register</button>
+        </div>
+    }
+    </div>
+}
+
+@include.template("Register", body)

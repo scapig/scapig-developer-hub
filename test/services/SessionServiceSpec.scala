@@ -1,7 +1,7 @@
 package services
 
 import connectors.DeveloperConnector
-import models.{Developer, HasSucceeded, UserProfileEditRequest}
+import models.{Developer, HasSucceeded, UserCreateRequest, UserProfileEditRequest}
 import org.mockito.BDDMockito.given
 import org.scalatest.mockito.MockitoSugar
 import utils.UnitSpec
@@ -39,4 +39,17 @@ class SessionServiceSpec extends UnitSpec with MockitoSugar {
       result shouldBe HasSucceeded
     }
   }
+
+  "register" should {
+    val userCreateRequest = UserCreateRequest("admin@test.com", "password", "John", "Doe")
+
+    "create the user" in new Setup {
+      given(developerConnector.register(userCreateRequest)).willReturn(successful(developer))
+
+      val result = await(underTest.register(userCreateRequest))
+
+      result shouldBe developer
+    }
+  }
+
 }

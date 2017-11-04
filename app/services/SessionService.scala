@@ -3,7 +3,7 @@ package services
 import javax.inject.{Inject, Singleton}
 
 import connectors.DeveloperConnector
-import models.{Developer, HasSucceeded, Session, UserProfileEditRequest}
+import models._
 
 import scala.concurrent.Future
 
@@ -16,4 +16,6 @@ class SessionService @Inject()(developerConnector: DeveloperConnector) {
 
   def updateUserProfile(email: String, userProfileEditRequest: UserProfileEditRequest): Future[HasSucceeded] =
     developerConnector.updateProfile(email, userProfileEditRequest)
+
+  def register(userCreateRequest: UserCreateRequest): Future[Developer] = developerConnector.register(userCreateRequest)
 }

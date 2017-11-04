@@ -16,3 +16,6 @@ POST    /login                          @controllers.LoginController.login()
 
 GET     /profile                        @controllers.ProfileController.showProfileForm()
 POST    /profile                        @controllers.ProfileController.editProfileAction()
+
+GET     /register                       @controllers.ProfileController.showRegistrationForm()
+POST    /register                       @controllers.ProfileController.registerAction()

@@ -12,10 +12,15 @@ package object controllers {
     val applicationNameInvalidKey = "application.name.invalid.field"
     val emailaddressRequiredKey = "emailaddress.error.required.field"
     val emailaddressNotValidKey = "emailaddress.error.not.valid.field"
+    val emailAlreadyRegisteredKey = "emailaddress.already.registered.global"
     val emailMaxLengthKey = "emailaddress.error.maxLength.field"
     val loginPasswordRequiredKey = "loginpassword.error.required.field"
     val redirectUriInvalidKey = "redirect.uri.invalid.field"
     val rateLimitTierInvalidKey = "ratelimittier.invalid.field"
+    val firstNameRequiredKey = "firstname.error.required.field"
+    val lastNameRequiredKey = "lastname.error.required.field"
+    val passwordRequiredKey = "password.error.required.field"
+    val passwordNoMatchKey = "password.error.no.match.global"
   }
 
   val emailValidator = {
@@ -27,6 +32,8 @@ package object controllers {
 
   val loginPasswordValidator =
     Forms.text.verifying(loginPasswordRequiredKey, isNotBlankString)
+
+  def requiredValidator(errorMessage: String) = Forms.text.verifying(errorMessage, isNotBlankString)
 
   private val emailRegex = """^[a-zA-Z0-9\.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$""".r
   private def isValidEmail(email: String): Boolean = emailRegex.findFirstMatchIn(email).isDefined

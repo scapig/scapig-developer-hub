@@ -8,7 +8,8 @@
     <ul class="tabs-nav">
         <li aria-selected="false" role="tab" class="tab" aria-controls="subscriptions" tabindex="0"><span class="tabs-nav__tab--active">Application Details</span></li>
         <li aria-selected="false" role="tab" class="tab" aria-controls="subscriptions" tabindex="1"><a class="tabs-nav__tab" href="/applications/@applicationView.app.id?tab=APP_SUBSCRIPTIONS_TAB">Subscriptions</a></li>
-        <li aria-selected="false" role="tab" class="tab" aria-controls="subscriptions" tabindex="2"><a class="tabs-nav__tab" href="/applications/@applicationView.app.id?tab=APP_CREDENTIALS_TAB">Credentials</a></li>
+        <li aria-selected="false" role="tab" class="tab" aria-controls="subscriptions" tabindex="2"><a class="tabs-nav__tab" href="/applications/@applicationView.app.id?tab=SANDBOX_CREDENTIALS_TAB">Sandbox Credentials</a></li>
+        <li aria-selected="false" role="tab" class="tab" aria-controls="subscriptions" tabindex="3"><a class="tabs-nav__tab" href="/applications/@applicationView.app.id?tab=PRODUCTION_CREDENTIALS_TAB">Production Credentials</a></li>
     </ul>
     <p>
     @helper.form(action = controllers.routes.ManageApplicationController.updateApplicationAction(applicationView.app.id.toString)) {
@@ -40,7 +41,7 @@
 
             <div class="form-field">
                 <label for="rateLimitTier" class="label--full-length"><strong>Rate Limit Tier</strong></label>
-                <select id="rateLimitTier" name="rateLimitTier" value="@form.data.get("rateLimitTier")">
+                <select id="rateLimitTier" name="rateLimitTier" class="form-control" value="@form.data.get("rateLimitTier")">
                     @for(tier <- RateLimitTier.values) {
                         <option @if(form.data.get("rateLimitTier").contains(tier.toString)) {selected} value="@tier">@tier</option>
                     }
@@ -48,7 +49,7 @@
             </div>
         </div>
 
-        <button id="save" type="submit" role="button">Save</button>
+        <button id="save" class="button" type="submit" role="button">Save</button>
     }
     </p>
     </div>

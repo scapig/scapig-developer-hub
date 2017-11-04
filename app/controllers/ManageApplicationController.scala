@@ -17,7 +17,8 @@ class ManageApplicationController  @Inject()(cc: ControllerComponents, applicati
 
   val APP_DETAILS_TAB = "APP_DETAILS_TAB"
   val APP_SUBSCRIPTIONS_TAB = "APP_SUBSCRIPTIONS_TAB"
-  val APP_CREDENTIALS_TAB = "APP_CREDENTIALS_TAB"
+  val PRODUCTION_CREDENTIALS_TAB = "PRODUCTION_CREDENTIALS_TAB"
+  val SANDBOX_CREDENTIALS_TAB = "SANDBOX_CREDENTIALS_TAB"
 
   //TODO Replace email by loggedIn action
   def manageApps() = Action.async { implicit request =>
@@ -32,7 +33,8 @@ class ManageApplicationController  @Inject()(cc: ControllerComponents, applicati
     applicationService.fetchApplicationViewData(id) map { applicationViewData =>
       tab match {
         case Some(`APP_SUBSCRIPTIONS_TAB`) => Ok(views.html.applications.applicationSubscriptions(applicationViewData))
-        case Some(`APP_CREDENTIALS_TAB`) => Ok(views.html.applications.applicationCredentials(applicationViewData))
+        case Some(`PRODUCTION_CREDENTIALS_TAB`) => Ok(views.html.applications.productionCredentials(applicationViewData))
+        case Some(`SANDBOX_CREDENTIALS_TAB`) => Ok(views.html.applications.sandboxCredentials(applicationViewData))
         case _ => Ok(views.html.applications.applicationDetails(applicationViewData, EditApplicationForm.form.fill(EditApplicationForm(applicationViewData.app))))
       }
     } recover {

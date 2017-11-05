@@ -126,6 +126,28 @@ class DeveloperConnectorSpec extends UnitSpec with BeforeAndAfterAll with Before
 
       result shouldBe HasSucceeded
     }
+  }
+
+  "changePassword" should {
+    val changePasswordRequest = ChangePasswordRequest("oldPassword", "newPassword")
+
+    "changePassword" in new Setup {
+      stubFor(post(urlPathEqualTo(s"/developer/${developer.email}/password")).withRequestBody(equalToJson(Json.toJson(changePasswordRequest).toString()))
+        .willReturn(aResponse()
+          .withStatus(Status.OK)))
+
+      val result = await(developerConnector.changePassword(developer.email, changePasswordRequest))
+
+      result shouldBe HasSucceeded
+    }
+
+    "fail with InvalidCredentialsException when the password is invalid" in new Setup {
+      stubFor(post(urlPathEqualTo(s"/developer/${developer.email}/password")).withRequestBody(equalToJson(Json.toJson(changePasswordRequest).toString()))
+        .willReturn(aResponse()
+          .withStatus(Status.UNAUTHORIZED)))
+
+      intercept[InvalidCredentialsException]{await(developerConnector.changePassword(developer.email, changePasswordRequest))}
+    }
 
   }
 

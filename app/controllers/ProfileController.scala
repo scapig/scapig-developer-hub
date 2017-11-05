@@ -2,8 +2,8 @@ package controllers
 
 import javax.inject.{Inject, Singleton}
 
-import controllers.FormKeys.{emailAlreadyRegisteredKey, passwordNoMatchKey}
-import models.{UserAlreadyRegisteredException, UserCreateRequest, UserProfileEditRequest}
+import controllers.FormKeys.{emailAlreadyRegisteredKey, passwordInvalidKey, passwordNoMatchKey}
+import models._
 import play.api.data.Form
 import play.api.data.Forms.{mapping, text}
 import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
@@ -59,6 +59,30 @@ class ProfileController  @Inject()(cc: ControllerComponents, sessionService: Ses
 
     RegisterForm.form.bindFromRequest.fold(registerWithFormErrors, registerWithValidForm)
   }
+
+  //TODO Add session
+  def showChangePasswordForm() = Action.async { implicit request =>
+    Future(Ok(views.html.user.changePassword(ChangePasswordForm.form)))
+  }
+
+  //TODO Add session
+  def changePasswordAction() = Action.async { implicit request =>
+    val email = "admin@app.com"
+
+    def changePasswordWithFormErrors(errors: Form[ChangePasswordForm]) = {
+      Future.successful(BadRequest(views.html.user.changePassword(errors)))
+    }
+
+    def changePasswordWithValidForm(validForm: ChangePasswordForm) = {
+      sessionService.changePassword(email, ChangePasswordRequest(validForm.oldPassword, validForm.password))
+        .map(_ => Redirect(routes.ProfileController.showProfileForm())) recover {
+        case _: InvalidCredentialsException => BadRequest(views.html.user.changePassword(ChangePasswordForm.form.fill(validForm).withGlobalError(passwordInvalidKey)))
+      }
+    }
+
+    ChangePasswordForm.form.bindFromRequest.fold(changePasswordWithFormErrors, changePasswordWithValidForm)
+  }
+
 }
 
 case class EditProfileForm(firstName: String, lastName: String)
@@ -67,13 +91,38 @@ object EditProfileForm {
 
   val form: Form[EditProfileForm] = Form(
     mapping(
-      "firstName" -> text,
-      "lastName" -> text
+      "firstName" -> requiredValidator(FormKeys.firstNameRequiredKey),
+      "lastName" -> requiredValidator(FormKeys.lastNameRequiredKey)
     )(EditProfileForm.apply)(EditProfileForm.unapply)
   )
 }
 
-case class RegisterForm(email: String, firstName: String, lastName: String, password: String, confirmPassword: String)
+trait ConfirmPassword {
+  val password: String
+  val confirmPassword: String
+}
+
+object ConfirmPassword {
+  def passwordsMatch = Constraint[ConfirmPassword]("password") {
+    case (rf) if rf.password != rf.confirmPassword => Invalid(ValidationError(passwordNoMatchKey))
+    case _ => Valid
+  }
+}
+
+case class ChangePasswordForm(oldPassword: String, password: String, confirmPassword: String) extends ConfirmPassword
+
+object ChangePasswordForm {
+  val form: Form[ChangePasswordForm] = Form(
+    mapping(
+      "oldPassword" -> requiredValidator(FormKeys.currentPasswordRequiredKey),
+      "password" -> requiredValidator(FormKeys.newPasswordRequiredKey),
+      "confirmPassword" -> text
+    )(ChangePasswordForm.apply)(ChangePasswordForm.unapply).verifying(ConfirmPassword.passwordsMatch)
+  )
+
+}
+
+case class RegisterForm(email: String, firstName: String, lastName: String, password: String, confirmPassword: String) extends ConfirmPassword
 
 object RegisterForm {
 
@@ -84,12 +133,6 @@ object RegisterForm {
       "lastName" -> requiredValidator(FormKeys.lastNameRequiredKey),
       "password" -> requiredValidator(FormKeys.passwordRequiredKey),
       "confirmPassword" -> text
-    )(RegisterForm.apply)(RegisterForm.unapply).verifying(passwordsMatch)
+    )(RegisterForm.apply)(RegisterForm.unapply).verifying(ConfirmPassword.passwordsMatch)
   )
-
-  def passwordsMatch = Constraint[RegisterForm]("password") {
-    case (rf) if rf.password != rf.confirmPassword => Invalid(ValidationError(passwordNoMatchKey))
-    case _ => Valid
-  }
-
 }

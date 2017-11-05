@@ -10,3 +10,6 @@ emailaddress.already.registered.global=Choose an email address that is not alrea
 firstname.error.required.field=Provide your first name
 lastname.error.required.field=Provide your last name
 password.error.required.field=Provide your password
+currentpassword.error.required.field=Provide your current password
+newpassword.error.required.field=Provide your new password
+password.error.invalid.field=Invalid password

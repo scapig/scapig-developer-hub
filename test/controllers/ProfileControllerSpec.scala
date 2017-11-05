@@ -110,4 +110,56 @@ class ProfileControllerSpec extends UnitSpec with MockitoSugar {
 
   }
 
+  "showChangePasswordForm" should {
+    "display the change password form" in new Setup {
+      val result = await(underTest.showChangePasswordForm()(addCSRFToken(request)))
+
+      status(result) shouldBe Status.OK
+      bodyOf(result) should include("Change Password")
+    }
+  }
+
+  "changePasswordAction" should {
+    "update the password and redirect to the user profile" in new Setup {
+      given(sessionService.changePassword(any(), any())).willReturn(successful(HasSucceeded))
+
+      val result = await(underTest.changePasswordAction()(addCSRFToken(request.withFormUrlEncodedBody(
+        "oldPassword" -> "OldPassword",
+        "password" -> "Password",
+        "confirmPassword" -> "Password"
+      ))))
+
+      status(result) shouldBe Status.SEE_OTHER
+      result.header.headers("Location") shouldBe "/profile"
+      verify(sessionService).changePassword(userEmail, ChangePasswordRequest("OldPassword", "Password"))
+    }
+
+    "validate that the password and confirmPassword are similar" in new Setup {
+      given(sessionService.changePassword(any(), any())).willReturn(successful(HasSucceeded))
+
+      val result = await(underTest.changePasswordAction()(addCSRFToken(request.withFormUrlEncodedBody(
+        "oldPassword" -> "OldPassword",
+        "password" -> "Password",
+        "confirmPassword" -> "anotherPassword"
+      ))))
+
+      status(result) shouldBe Status.BAD_REQUEST
+      bodyOf(result) should include ("password.error.no.match.global")
+    }
+
+    "return an error message when the password is not valid" in new Setup {
+      given(sessionService.changePassword(any(), any())).willReturn(failed(InvalidCredentialsException()))
+
+      val result = await(underTest.changePasswordAction()(addCSRFToken(request.withFormUrlEncodedBody(
+        "oldPassword" -> "OldPassword",
+        "password" -> "Password",
+        "confirmPassword" -> "Password"
+      ))))
+
+      status(result) shouldBe Status.BAD_REQUEST
+      bodyOf(result) should include ("password.error.invalid.field")
+    }
+
+  }
+
 }

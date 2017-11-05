@@ -19,7 +19,10 @@ package object controllers {
     val rateLimitTierInvalidKey = "ratelimittier.invalid.field"
     val firstNameRequiredKey = "firstname.error.required.field"
     val lastNameRequiredKey = "lastname.error.required.field"
+    val currentPasswordRequiredKey = "currentpassword.error.required.field"
+    val newPasswordRequiredKey = "newpassword.error.required.field"
     val passwordRequiredKey = "password.error.required.field"
+    val passwordInvalidKey = "password.error.invalid.field"
     val passwordNoMatchKey = "password.error.no.match.global"
   }
 

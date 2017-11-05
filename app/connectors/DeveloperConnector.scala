@@ -55,7 +55,7 @@ class DeveloperConnector @Inject()(appConfig: AppConfig, wsClient: WSClient) {
 
   def changePassword(email: String, changePasswordRequest: ChangePasswordRequest): Future[HasSucceeded] = {
     wsClient.url(s"$serviceUrl/developer/$email/password").post(Json.toJson(changePasswordRequest)) map {
-      case response if response.status == Status.OK => HasSucceeded
+      case response if response.status == Status.NO_CONTENT => HasSucceeded
       case response if response.status == Status.UNAUTHORIZED => throw InvalidCredentialsException()
       case r: WSResponse => throw new RuntimeException(s"Invalid response from tapi-developer ${r.status} ${r.body}")
     }

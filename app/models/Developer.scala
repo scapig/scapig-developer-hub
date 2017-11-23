@@ -2,9 +2,13 @@ package models
 
 import java.util.UUID
 
+import com.mohiva.play.silhouette.api.{Authorization, Env, Identity}
+import com.mohiva.play.silhouette.impl.authenticators.{CookieAuthenticator, SessionAuthenticator}
+import play.api.mvc.Request
+
 import scala.concurrent.Future
 
-case class Developer(email: String, firstName: String, lastName: String) {
+case class Developer(email: String, firstName: String, lastName: String) extends Identity {
   val displayedName = s"$firstName $lastName"
 }
 
@@ -23,3 +27,15 @@ case class UserCreateRequest(email: String,
                              password: String,
                              firstName: String,
                              lastName: String)
+
+class SessionEnv extends Env {
+  type I = Developer
+  type A = SessionAuthenticator
+}
+/*
+case class AdminRights(applicationId: String) extends Authorization[Developer, CookieAuthenticator]{
+  override def isAuthorized[B](identity: Developer, authenticator: CookieAuthenticator)(implicit request: Request[B]) =
+    identity.
+}
+*/
+

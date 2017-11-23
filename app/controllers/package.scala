@@ -1,8 +1,11 @@
 import java.net.URL
 
+import com.google.inject.{AbstractModule, TypeLiteral}
+import com.mohiva.play.silhouette.api.{Silhouette, SilhouetteProvider}
 import controllers.FormKeys.{redirectUriInvalidKey, _}
-import models.RateLimitTier
+import models.{RateLimitTier, SessionEnv}
 import play.api.data.Forms
+import play.api.inject
 
 import scala.util.Try
 
@@ -55,5 +58,7 @@ package object controllers {
     tier => RateLimitTier.values.exists(_.toString == tier))
 
   private def isValidUrl: String => Boolean = s => Try(new URL(s.trim)).map(_ => true).getOrElse(false)
+
+  inject.bind[Silhouette[SessionEnv]].to[SilhouetteProvider[SessionEnv]]
 
 }

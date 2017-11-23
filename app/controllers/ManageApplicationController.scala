@@ -2,6 +2,7 @@ package controllers
 
 import javax.inject.{Inject, Singleton}
 
+import com.mohiva.play.silhouette.api.Silhouette
 import models._
 import play.api.data.Form
 import play.api.data.Forms.{mapping, optional, seq, text}
@@ -13,7 +14,8 @@ import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
 @Singleton
-class ManageApplicationController  @Inject()(cc: ControllerComponents, applicationService: ApplicationService) extends AbstractController(cc) with I18nSupport {
+class ManageApplicationController  @Inject()(cc: ControllerComponents, applicationService: ApplicationService,
+                                             silhouette: Silhouette[SessionEnv]) extends AbstractController(cc) with I18nSupport {
 
   val APP_DETAILS_TAB = "APP_DETAILS_TAB"
   val APP_SUBSCRIPTIONS_TAB = "APP_SUBSCRIPTIONS_TAB"
@@ -21,10 +23,9 @@ class ManageApplicationController  @Inject()(cc: ControllerComponents, applicati
   val SANDBOX_CREDENTIALS_TAB = "SANDBOX_CREDENTIALS_TAB"
 
   //TODO Replace email by loggedIn action
-  def manageApps() = Action.async { implicit request =>
-    val email = "admin@app.com"
-    applicationService.fetchByCollaboratorEmail(email) map { applications =>
-      Ok(views.html.applications.manageApplications(applications.map(ApplicationSummary(_, email))))
+  def manageApps() = silhouette.SecuredAction.async { implicit request =>
+    applicationService.fetchByCollaboratorEmail(request.identity.email) map { applications =>
+      Ok(views.html.applications.manageApplications(applications.map(ApplicationSummary(_, request.identity.email))))
     }
   }
 

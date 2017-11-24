@@ -6,7 +6,8 @@ import org.mockito.BDDMockito.given
 import org.scalatest.mockito.MockitoSugar
 import utils.UnitSpec
 
-import scala.concurrent.Future.successful
+import scala.concurrent.Future
+import scala.concurrent.Future.{failed, successful}
 
 class SessionServiceSpec extends UnitSpec with MockitoSugar {
 
@@ -62,6 +63,27 @@ class SessionServiceSpec extends UnitSpec with MockitoSugar {
 
       result shouldBe HasSucceeded
     }
+  }
+
+  "login" should {
+    val username = "admin@test.com"
+    val password = "aPassword"
+
+    "return the session when successful" in new Setup {
+      val sessionResponse = SessionResponse(Session(username), developer)
+      given(developerConnector.createSession(SessionCreateRequest(username, password))).willReturn(successful(sessionResponse))
+
+      val result = await(underTest.login(username, password))
+
+      result shouldBe sessionResponse
+    }
+
+    "propagate InvalidCredentialsException when not successful" in new Setup {
+      given(developerConnector.createSession(SessionCreateRequest(username, password))).willReturn(failed(InvalidCredentialsException()))
+
+      intercept[InvalidCredentialsException]{await(underTest.login(username, password))}
+    }
+
   }
 
 }

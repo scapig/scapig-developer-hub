@@ -22,4 +22,9 @@ class SessionService @Inject()(developerConnector: DeveloperConnector) {
 
   def changePassword(email: String, changePasswordRequest: ChangePasswordRequest): Future[HasSucceeded] =
     developerConnector.changePassword(email, changePasswordRequest)
+
+  def login(username: String, password: String): Future[SessionResponse] = {
+    developerConnector.createSession(SessionCreateRequest(username, password))
+  }
+
 }

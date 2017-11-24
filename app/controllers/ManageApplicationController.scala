@@ -24,7 +24,7 @@ class ManageApplicationController  @Inject()(cc: ControllerComponents, applicati
   val SANDBOX_CREDENTIALS_TAB = "SANDBOX_CREDENTIALS_TAB"
 
   //TODO Replace email by loggedIn action
-  def manageApps() = Action.async { implicit request =>
+  def manageApps() = silhouette.SecuredAction.async { implicit request =>
     val email = "asdfg"
     applicationService.fetchByCollaboratorEmail(email) map { applications =>
       Ok(views.html.applications.manageApplications(applications.map(ApplicationSummary(_, email))))

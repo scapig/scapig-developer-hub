@@ -26,10 +26,13 @@ import com.mohiva.play.silhouette.impl.util._
 import com.mohiva.play.silhouette.password.{BCryptPasswordHasher, BCryptSha256PasswordHasher}
 import com.mohiva.play.silhouette.persistence.daos.{DelegableAuthInfoDAO, InMemoryAuthInfoDAO}
 import com.mohiva.play.silhouette.persistence.repositories.DelegableAuthInfoRepository
+import controllers.routes
 import play.api.Configuration
 import play.api.libs.openid.OpenIdClient
 import play.api.libs.ws.WSClient
 import play.api.mvc.{CookieHeaderEncoding, RequestHeader, Results}
+import net.ceedubs.ficus.Ficus._
+import net.ceedubs.ficus.readers.ArbitraryTypeReader._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
@@ -135,7 +138,7 @@ class SilhouetteModule extends AbstractModule {
    */
   @Provides @Named("oauth1-token-secret-signer")
   def provideOAuth1TokenSecretSigner(configuration: Configuration): Signer = {
-    val config = configuration.underlying.getObject("silhouette.oauth1TokenSecretProvider.signer").asInstanceOf[JcaSignerSettings]
+    val config = configuration.underlying.as[JcaSignerSettings]("silhouette.oauth1TokenSecretProvider.signer")
 
     new JcaSigner(config)
   }
@@ -148,8 +151,7 @@ class SilhouetteModule extends AbstractModule {
    */
   @Provides @Named("oauth1-token-secret-crypter")
   def provideOAuth1TokenSecretCrypter(configuration: Configuration): Crypter = {
-    val config = configuration.underlying.getObject("silhouette.oauth1TokenSecretProvider.crypter").asInstanceOf[JcaCrypterSettings]
-
+    val config = configuration.underlying.as[JcaCrypterSettings]("silhouette.oauth1TokenSecretProvider.crypter")
     new JcaCrypter(config)
   }
 
@@ -161,8 +163,7 @@ class SilhouetteModule extends AbstractModule {
    */
   @Provides @Named("csrf-state-item-signer")
   def provideCSRFStateItemSigner(configuration: Configuration): Signer = {
-    val config = configuration.underlying.getObject("silhouette.csrfStateItemHandler.signer").asInstanceOf[JcaSignerSettings]
-
+    val config = configuration.underlying.as[JcaSignerSettings]("silhouette.csrfStateItemHandler.signer")
     new JcaSigner(config)
   }
 
@@ -174,8 +175,7 @@ class SilhouetteModule extends AbstractModule {
    */
   @Provides @Named("social-state-signer")
   def provideSocialStateSigner(configuration: Configuration): Signer = {
-    val config = configuration.underlying.getObject("silhouette.socialStateHandler.signer").asInstanceOf[JcaSignerSettings]
-
+    val config = configuration.underlying.as[JcaSignerSettings]("silhouette.socialStateHandler.signer")
     new JcaSigner(config)
   }
 
@@ -187,7 +187,9 @@ class SilhouetteModule extends AbstractModule {
    */
   @Provides @Named("authenticator-signer")
   def provideAuthenticatorSigner(configuration: Configuration): Signer = {
-    val config = configuration.underlying.getObject("silhouette.authenticator.signer").asInstanceOf[JcaSignerSettings]
+    val config = configuration.underlying.as[JcaSignerSettings]("silhouette.authenticator.signer")
+
+//    val config = configuration.underlying.getObject("silhouette.authenticator.signer").asInstanceOf[JcaSignerSettings]
 
     new JcaSigner(config)
   }
@@ -200,8 +202,7 @@ class SilhouetteModule extends AbstractModule {
    */
   @Provides @Named("authenticator-crypter")
   def provideAuthenticatorCrypter(configuration: Configuration): Crypter = {
-    val config = configuration.underlying.getObject("silhouette.authenticator.crypter").asInstanceOf[JcaCrypterSettings]
-
+    val config = configuration.underlying.as[JcaCrypterSettings]("silhouette.authenticator.crypter")
     new JcaCrypter(config)
   }
 
@@ -247,8 +248,7 @@ class SilhouetteModule extends AbstractModule {
     idGenerator: IDGenerator,
     configuration: Configuration,
     clock: Clock): AuthenticatorService[CookieAuthenticator] = {
-
-    val config = configuration.underlying.getObject("silhouette.authenticator").asInstanceOf[CookieAuthenticatorSettings]
+    val config = configuration.underlying.as[CookieAuthenticatorSettings]("silhouette.authenticator")
     val authenticatorEncoder = new CrypterAuthenticatorEncoder(crypter)
 
     new CookieAuthenticatorService(config, None, signer, cookieHeaderEncoding, authenticatorEncoder, fingerprintGenerator, idGenerator, clock)
@@ -278,8 +278,7 @@ class SilhouetteModule extends AbstractModule {
     @Named("oauth1-token-secret-crypter") crypter: Crypter,
     configuration: Configuration,
     clock: Clock): OAuth1TokenSecretProvider = {
-
-    val settings = configuration.underlying.getObject("silhouette.oauth1TokenSecretProvider").asInstanceOf[CookieSecretSettings]
+    val settings = configuration.underlying.as[CookieSecretSettings]("silhouette.oauth1TokenSecretProvider")
     new CookieSecretProvider(settings, signer, crypter, clock)
   }
 
@@ -296,7 +295,7 @@ class SilhouetteModule extends AbstractModule {
     idGenerator: IDGenerator,
     @Named("csrf-state-item-signer") signer: Signer,
     configuration: Configuration): CsrfStateItemHandler = {
-    val settings = configuration.underlying.getObject("silhouette.csrfStateItemHandler").asInstanceOf[CsrfStateSettings]
+    val settings = configuration.underlying.as[CsrfStateSettings]("silhouette.csrfStateItemHandler")
     new CsrfStateItemHandler(settings, idGenerator, signer)
   }
 
@@ -353,7 +352,7 @@ class SilhouetteModule extends AbstractModule {
     socialStateHandler: SocialStateHandler,
     configuration: Configuration): FacebookProvider = {
 
-    new FacebookProvider(httpLayer, socialStateHandler, configuration.underlying.getObject("silhouette.facebook").asInstanceOf[OAuth2Settings])
+    new FacebookProvider(httpLayer, socialStateHandler, configuration.underlying.as[OAuth2Settings]("silhouette.facebook"))
   }
 
   /**
@@ -370,7 +369,9 @@ class SilhouetteModule extends AbstractModule {
     socialStateHandler: SocialStateHandler,
     configuration: Configuration): GoogleProvider = {
 
-    new GoogleProvider(httpLayer, socialStateHandler, configuration.underlying.getObject("silhouette.google").asInstanceOf[OAuth2Settings])
+    new GoogleProvider(httpLayer, socialStateHandler,
+      configuration.underlying.as[OAuth2Settings]("silhouette.google")
+    )
   }
 
   /**
@@ -387,7 +388,9 @@ class SilhouetteModule extends AbstractModule {
     socialStateHandler: SocialStateHandler,
     configuration: Configuration): VKProvider = {
 
-    new VKProvider(httpLayer, socialStateHandler, configuration.underlying.getObject("silhouette.vk").asInstanceOf[OAuth2Settings])
+    new VKProvider(httpLayer, socialStateHandler,
+      configuration.underlying.as[OAuth2Settings]("silhouette.vk")
+    )
   }
 
   /**
@@ -404,7 +407,8 @@ class SilhouetteModule extends AbstractModule {
     tokenSecretProvider: OAuth1TokenSecretProvider,
     configuration: Configuration): TwitterProvider = {
 
-    val settings = configuration.underlying.getObject("silhouette.twitter").asInstanceOf[OAuth1Settings]
+    val settings = configuration.underlying.as[OAuth1Settings]("silhouette.twitter")
+
     new TwitterProvider(httpLayer, new PlayOAuth1Service(settings), tokenSecretProvider, settings)
   }
 
@@ -422,7 +426,8 @@ class SilhouetteModule extends AbstractModule {
     tokenSecretProvider: OAuth1TokenSecretProvider,
     configuration: Configuration): XingProvider = {
 
-    val settings = configuration.underlying.getObject("silhouette.xing").asInstanceOf[OAuth1Settings]
+    val settings = configuration.underlying.as[OAuth1Settings]("silhouette.xing")
+
     new XingProvider(httpLayer, new PlayOAuth1Service(settings), tokenSecretProvider, settings)
   }
 
@@ -439,8 +444,8 @@ class SilhouetteModule extends AbstractModule {
     httpLayer: HTTPLayer,
     client: OpenIdClient,
     configuration: Configuration): YahooProvider = {
+    val settings = configuration.underlying.as[OpenIDSettings]("silhouette.yahoo")
 
-    val settings = configuration.underlying.getObject("silhouette.yahoo").asInstanceOf[OpenIDSettings]
     new YahooProvider(httpLayer, new PlayOpenIDService(client, settings), settings)
   }
 }
@@ -456,17 +461,17 @@ case class User(
 
 class CustomUnsecuredErrorHandler extends UnsecuredErrorHandler {
   override def onNotAuthorized(implicit request: RequestHeader) = {
-    Future.successful(Results.Ok("THV"))
+    Future.successful(Results.Redirect(routes.LoginController.showLoginPage()))
   }
 }
 
 class CustomSecuredErrorHandler @Inject()() extends SecuredErrorHandler {
   override def onNotAuthenticated(implicit request: RequestHeader) = {
-    Future.successful(Results.Ok("THV"))
+    Future.successful(Results.Redirect(routes.LoginController.showLoginPage()))
   }
 
   override def onNotAuthorized(implicit request: RequestHeader) = {
-    Future.successful(Results.Ok("THV"))
+    Future.successful(Results.Redirect(routes.LoginController.showLoginPage()))
   }
 }
 

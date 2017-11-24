@@ -26,7 +26,9 @@ import com.mohiva.play.silhouette.impl.util._
 import com.mohiva.play.silhouette.password.{BCryptPasswordHasher, BCryptSha256PasswordHasher}
 import com.mohiva.play.silhouette.persistence.daos.{DelegableAuthInfoDAO, InMemoryAuthInfoDAO}
 import com.mohiva.play.silhouette.persistence.repositories.DelegableAuthInfoRepository
+import connectors.DeveloperConnector
 import controllers.routes
+import models.Developer
 import play.api.Configuration
 import play.api.libs.openid.OpenIdClient
 import play.api.libs.ws.WSClient
@@ -452,12 +454,9 @@ class SilhouetteModule extends AbstractModule {
 
 
 trait DefaultEnv extends Env {
-  type I = User
+  type I = Developer
   type A = CookieAuthenticator
 }
-
-case class User(
-                 userID: UUID) extends Identity
 
 class CustomUnsecuredErrorHandler extends UnsecuredErrorHandler {
   override def onNotAuthorized(implicit request: RequestHeader) = {
@@ -475,10 +474,12 @@ class CustomSecuredErrorHandler @Inject()() extends SecuredErrorHandler {
   }
 }
 
-trait UserService extends IdentityService[User] {
+trait UserService extends IdentityService[Developer] {
 
 }
 
-class UserServiceImpl @Inject()()(implicit ex: ExecutionContext) extends UserService {
-  override def retrieve(loginInfo: LoginInfo): Future[Option[User]] = Future.successful(None)
+class UserServiceImpl @Inject()(developerConnector: DeveloperConnector) extends UserService {
+  override def retrieve(loginInfo: LoginInfo): Future[Option[Developer]] = {
+    developerConnector.fetchSession(loginInfo.providerKey) map (_ map (_.user))
+  }
 }

@@ -32,9 +32,10 @@ class DeveloperConnector @Inject()(appConfig: AppConfig, wsClient: WSClient) {
     }
   }
 
-  def fetchSession(sessionId: String): Future[SessionResponse] = {
+  def fetchSession(sessionId: String): Future[Option[SessionResponse]] = {
     wsClient.url(s"$serviceUrl/session/$sessionId").get() map {
-      case response if response.status == Status.OK => Json.parse(response.body).as[SessionResponse]
+      case response if response.status == Status.OK => Json.parse(response.body).asOpt[SessionResponse]
+      case response if response.status == Status.NOT_FOUND => None
       case r: WSResponse => throw new RuntimeException(s"Invalid response from tapi-developer ${r.status} ${r.body}")
     }
   }

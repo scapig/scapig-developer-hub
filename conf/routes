@@ -20,5 +20,7 @@ POST    /profile                        @controllers.ProfileController.editProfi
 GET     /register                       @controllers.ProfileController.showRegistrationForm()
 POST    /register                       @controllers.ProfileController.registerAction()
 
+GET     /logout                         @controllers.LoginController.logout()
+
 GET     /profile/password               @controllers.ProfileController.showChangePasswordForm()
 POST    /profile/password               @controllers.ProfileController.changePasswordAction()

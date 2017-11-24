@@ -2,13 +2,14 @@ package controllers
 
 import javax.inject.{Inject, Singleton}
 
+import com.mohiva.play.silhouette.api.actions.SecuredRequest
 import com.mohiva.play.silhouette.api.{LoginEvent, LoginInfo, Silhouette}
 import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
 import config.{AppConfig, DefaultEnv}
 import models.{InvalidCredentialsException, UserProfileEditRequest}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{AbstractController, Action, ControllerComponents, Results}
+import play.api.mvc._
 import services.SessionService
 import play.api.data.Forms._
 
@@ -22,11 +23,11 @@ class LoginController @Inject()(val appConfig: AppConfig,
                                 silhouette: Silhouette[DefaultEnv]) {
   val loginForm: Form[LoginForm] = LoginForm.form
 
-  def showLoginPage() = Action.async { implicit request =>
+  def showLoginPage() = silhouette.UnsecuredAction.async { implicit request =>
     Future.successful(Results.Ok(views.html.signIn("Sign in", loginForm)))
   }
 
-  def login() = Action.async { implicit request =>
+  def login() = silhouette.UnsecuredAction.async { implicit request =>
     def loginWithFormErrors(errors: Form[LoginForm]) = {
       Future.successful(Results.BadRequest(views.html.signIn("Sign in", errors)))
     }
@@ -45,6 +46,11 @@ class LoginController @Inject()(val appConfig: AppConfig,
 
     LoginForm.form.bindFromRequest.fold(loginWithFormErrors, loginWithValidForm)
   }
+
+  def logout() = silhouette.SecuredAction.async { implicit request =>
+    silhouette.env.authenticatorService.discard(request.authenticator, Results.Redirect(routes.LoginController.showLoginPage()))
+  }
+
 }
 
 case class LoginForm(emailaddress: String, password: String)

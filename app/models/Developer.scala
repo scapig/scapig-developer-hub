@@ -27,15 +27,3 @@ case class UserCreateRequest(email: String,
                              password: String,
                              firstName: String,
                              lastName: String)
-
-class SessionEnv extends Env {
-  type I = Developer
-  type A = SessionAuthenticator
-}
-/*
-case class AdminRights(applicationId: String) extends Authorization[Developer, CookieAuthenticator]{
-  override def isAuthorized[B](identity: Developer, authenticator: CookieAuthenticator)(implicit request: Request[B]) =
-    identity.
-}
-*/
-

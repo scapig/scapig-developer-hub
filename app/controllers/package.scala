@@ -1,11 +1,8 @@
 import java.net.URL
 
-import com.google.inject.{AbstractModule, TypeLiteral}
-import com.mohiva.play.silhouette.api.{Silhouette, SilhouetteProvider}
 import controllers.FormKeys.{redirectUriInvalidKey, _}
-import models.{RateLimitTier, SessionEnv}
+import models.RateLimitTier
 import play.api.data.Forms
-import play.api.inject
 
 import scala.util.Try
 

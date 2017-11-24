@@ -28,11 +28,11 @@ import com.mohiva.play.silhouette.persistence.daos.{DelegableAuthInfoDAO, InMemo
 import com.mohiva.play.silhouette.persistence.repositories.DelegableAuthInfoRepository
 import connectors.DeveloperConnector
 import controllers.routes
-import models.Developer
+import models.{Application, ApplicationNotFoundException, Developer}
 import play.api.Configuration
 import play.api.libs.openid.OpenIdClient
 import play.api.libs.ws.WSClient
-import play.api.mvc.{CookieHeaderEncoding, RequestHeader, Results}
+import play.api.mvc.{CookieHeaderEncoding, Request, RequestHeader, Results}
 import net.ceedubs.ficus.Ficus._
 import net.ceedubs.ficus.readers.ArbitraryTypeReader._
 
@@ -460,7 +460,7 @@ trait DefaultEnv extends Env {
 
 class CustomUnsecuredErrorHandler extends UnsecuredErrorHandler {
   override def onNotAuthorized(implicit request: RequestHeader) = {
-    Future.successful(Results.Redirect(routes.LoginController.showLoginPage()))
+    Future.successful(Results.NotFound("Page Not Found"))
   }
 }
 
@@ -470,7 +470,7 @@ class CustomSecuredErrorHandler @Inject()() extends SecuredErrorHandler {
   }
 
   override def onNotAuthorized(implicit request: RequestHeader) = {
-    Future.successful(Results.Redirect(routes.LoginController.showLoginPage()))
+    Future.successful(Results.NotFound("Page Not Found"))
   }
 }
 
@@ -481,5 +481,13 @@ trait UserService extends IdentityService[Developer] {
 class UserServiceImpl @Inject()(developerConnector: DeveloperConnector) extends UserService {
   override def retrieve(loginInfo: LoginInfo): Future[Option[Developer]] = {
     developerConnector.fetchSession(loginInfo.providerKey) map (_ map (_.user))
+  }
+}
+
+case class WithApplication(appFuture: Future[Application]) extends Authorization[Developer, CookieAuthenticator] {
+  override def isAuthorized[B](developer: Developer, authenticator: CookieAuthenticator)(implicit request: Request[B]) = {
+    appFuture.map(_.collaborators.exists(_.emailAddress == developer.email)) recover {
+      case _: ApplicationNotFoundException => false
+    }
   }
 }

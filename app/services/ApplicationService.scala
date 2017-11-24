@@ -13,6 +13,10 @@ class ApplicationService @Inject()(applicationConnector: ApplicationConnector, a
     applicationConnector.fetchByCollaboratorEmail(email)
   }
 
+  def fetchById(applicationId: String): Future[Application] = {
+    applicationConnector.fetch(applicationId)
+  }
+
   def fetchApplicationViewData(applicationId: String): Future[ApplicationViewData] = {
     for {
       application <- applicationConnector.fetch(applicationId)

@@ -151,4 +151,20 @@ class ApplicationServiceSpec extends UnitSpec with MockitoSugar {
     }
   }
 
+  "fetchById" should {
+    "return the application" in new Setup {
+      given(applicationConnector.fetch(application.id.toString)).willReturn(successful(application))
+
+      val result = await(underTest.fetchById(application.id.toString))
+
+      result shouldBe application
+    }
+
+    "propagate ApplicationNotFoundException when the application does not exist" in new Setup {
+      given(applicationConnector.fetch(application.id.toString)).willReturn(failed(ApplicationNotFoundException()))
+
+      intercept[ApplicationNotFoundException]{await(underTest.fetchById(application.id.toString))}
+    }
+
+  }
 }

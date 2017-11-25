@@ -22,14 +22,8 @@ import play.api.mvc.{CookieHeaderEncoding, Request, RequestHeader, Results}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-/**
- * The Guice module which wires all Silhouette dependencies.
- */
 class SilhouetteModule extends AbstractModule {
 
-  /**
-   * Configures the module.
-   */
   def configure() {
     bind(new TypeLiteral[Silhouette[DefaultEnv]]{}).to(new TypeLiteral[SilhouetteProvider[DefaultEnv]]{})
     bind(classOf[IDGenerator]).toInstance(new SecureRandomIDGenerator())

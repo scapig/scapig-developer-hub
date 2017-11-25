@@ -18,10 +18,10 @@ scalaVersion := "2.12.2"
 
 libraryDependencies ++= Seq( ws, guice, play.sbt.PlayImport.ehcache )
 libraryDependencies += "com.typesafe.play" %% "play-json-joda" % "2.6.0"
-libraryDependencies += "com.mohiva" %% "play-silhouette" % "5.0.0"
-libraryDependencies += "com.mohiva" %% "play-silhouette-password-bcrypt" % "5.0.0"
-libraryDependencies += "com.mohiva" %% "play-silhouette-persistence" % "5.0.0"
-libraryDependencies += "com.mohiva" %% "play-silhouette-crypto-jca" % "5.0.0"
+libraryDependencies += "com.mohiva" %% "play-silhouette" % "5.0.2"
+libraryDependencies += "com.mohiva" %% "play-silhouette-password-bcrypt" % "5.0.2"
+libraryDependencies += "com.mohiva" %% "play-silhouette-persistence" % "5.0.2"
+libraryDependencies += "com.mohiva" %% "play-silhouette-crypto-jca" % "5.0.2"
 libraryDependencies += "com.iheart" %% "ficus" % "1.4.1"
 
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.1" % "test"
@@ -29,6 +29,7 @@ libraryDependencies += "org.mockito" % "mockito-all" % "1.10.19" % "test"
 libraryDependencies += "com.github.tomakehurst" % "wiremock-standalone" % "2.8.0" % "test"
 libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.1" % "component"
 libraryDependencies += "org.scalaj" %% "scalaj-http" % "2.3.0" % "component"
+libraryDependencies += "com.mohiva" %% "play-silhouette-testkit" % "5.0.2" % "test"
 
 unmanagedResourceDirectories in Test <+=  baseDirectory ( _ /"target/web/public/test" )
 

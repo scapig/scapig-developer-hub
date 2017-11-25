@@ -143,7 +143,7 @@ class DeveloperConnectorSpec extends UnitSpec with BeforeAndAfterAll with Before
     "changePassword" in new Setup {
       stubFor(post(urlPathEqualTo(s"/developer/${developer.email}/password")).withRequestBody(equalToJson(Json.toJson(changePasswordRequest).toString()))
         .willReturn(aResponse()
-          .withStatus(Status.OK)))
+          .withStatus(Status.NO_CONTENT)))
 
       val result = await(developerConnector.changePassword(developer.email, changePasswordRequest))
 

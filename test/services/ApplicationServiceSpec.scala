@@ -167,4 +167,5 @@ class ApplicationServiceSpec extends UnitSpec with MockitoSugar {
     }
 
   }
+
 }

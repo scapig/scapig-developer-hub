@@ -93,7 +93,16 @@ class DeveloperConnectorSpec extends UnitSpec with BeforeAndAfterAll with Before
 
       val result = await(developerConnector.fetchSession(sessionId))
 
-      result shouldBe sessionResponse
+      result shouldBe Some(sessionResponse)
+    }
+
+    "return None when the session has expired or is invalid" in new Setup {
+      stubFor(get(s"/session/$sessionId").willReturn(aResponse()
+        .withStatus(Status.NOT_FOUND)))
+
+      val result = await(developerConnector.fetchSession(sessionId))
+
+      result shouldBe None
     }
 
   }
@@ -134,7 +143,7 @@ class DeveloperConnectorSpec extends UnitSpec with BeforeAndAfterAll with Before
     "changePassword" in new Setup {
       stubFor(post(urlPathEqualTo(s"/developer/${developer.email}/password")).withRequestBody(equalToJson(Json.toJson(changePasswordRequest).toString()))
         .willReturn(aResponse()
-          .withStatus(Status.OK)))
+          .withStatus(Status.NO_CONTENT)))
 
       val result = await(developerConnector.changePassword(developer.email, changePasswordRequest))
 

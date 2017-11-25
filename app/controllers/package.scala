@@ -55,5 +55,4 @@ package object controllers {
     tier => RateLimitTier.values.exists(_.toString == tier))
 
   private def isValidUrl: String => Boolean = s => Try(new URL(s.trim)).map(_ => true).getOrElse(false)
-
 }

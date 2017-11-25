@@ -2,6 +2,8 @@ package controllers
 
 import javax.inject.{Inject, Singleton}
 
+import com.mohiva.play.silhouette.api.Silhouette
+import config.DefaultEnv
 import controllers.FormKeys.{emailAlreadyRegisteredKey, passwordInvalidKey, passwordNoMatchKey}
 import models._
 import play.api.data.Form
@@ -15,26 +17,24 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 @Singleton
-class ProfileController  @Inject()(cc: ControllerComponents, sessionService: SessionService) extends AbstractController(cc) with I18nSupport {
+class ProfileController  @Inject()(cc: ControllerComponents,
+                                   sessionService: SessionService,
+                                   silhouette: Silhouette[DefaultEnv]) extends AbstractController(cc) with I18nSupport {
 
-  //TODO Add signed in
-  def showProfileForm() = Action.async { implicit request =>
-    val email = "admin@app.com"
-    sessionService.fetchDeveloper(email) map { developer =>
+  def showProfileForm() = silhouette.SecuredAction.async { implicit request =>
+    sessionService.fetchDeveloper(request.identity.email) map { developer =>
       Ok(views.html.user.userProfile(EditProfileForm.form.fill(EditProfileForm(developer.firstName, developer.lastName))))
     }
   }
 
-  //TODO Add signed in
-  def editProfileAction() = Action.async { implicit request =>
-    val email = "admin@app.com"
+  def editProfileAction() = silhouette.SecuredAction.async { implicit request =>
 
     def editProfileWithFormErrors(errors: Form[EditProfileForm]) = {
       Future.successful(BadRequest(views.html.user.userProfile(errors)))
     }
 
     def editProfileWithValidForm(validForm: EditProfileForm) = {
-      sessionService.updateUserProfile(email, UserProfileEditRequest(validForm.firstName, validForm.lastName))
+      sessionService.updateUserProfile(request.identity.email, UserProfileEditRequest(validForm.firstName, validForm.lastName))
         .map(_ => Redirect(routes.ProfileController.showProfileForm()))
     }
 
@@ -60,21 +60,18 @@ class ProfileController  @Inject()(cc: ControllerComponents, sessionService: Ses
     RegisterForm.form.bindFromRequest.fold(registerWithFormErrors, registerWithValidForm)
   }
 
-  //TODO Add session
-  def showChangePasswordForm() = Action.async { implicit request =>
+  def showChangePasswordForm() = silhouette.SecuredAction.async { implicit request =>
     Future(Ok(views.html.user.changePassword(ChangePasswordForm.form)))
   }
 
-  //TODO Add session
-  def changePasswordAction() = Action.async { implicit request =>
-    val email = "admin@app.com"
+  def changePasswordAction() = silhouette.SecuredAction.async { implicit request =>
 
     def changePasswordWithFormErrors(errors: Form[ChangePasswordForm]) = {
       Future.successful(BadRequest(views.html.user.changePassword(errors)))
     }
 
     def changePasswordWithValidForm(validForm: ChangePasswordForm) = {
-      sessionService.changePassword(email, ChangePasswordRequest(validForm.oldPassword, validForm.password))
+      sessionService.changePassword(request.identity.email, ChangePasswordRequest(validForm.oldPassword, validForm.password))
         .map(_ => Redirect(routes.ProfileController.showProfileForm())) recover {
         case _: InvalidCredentialsException => BadRequest(views.html.user.changePassword(ChangePasswordForm.form.fill(validForm).withGlobalError(passwordInvalidKey)))
       }

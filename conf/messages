@@ -13,3 +13,4 @@ password.error.required.field=Provide your password
 currentpassword.error.required.field=Provide your current password
 newpassword.error.required.field=Provide your new password
 password.error.invalid.field=Invalid password
+credentials.error.invalid.field=Invalid username or password

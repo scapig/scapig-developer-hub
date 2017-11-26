@@ -24,6 +24,7 @@ package object controllers {
     val passwordRequiredKey = "password.error.required.field"
     val passwordInvalidKey = "password.error.invalid.field"
     val passwordNoMatchKey = "password.error.no.match.global"
+    val invalidCredentialsKey = "credentials.error.invalid.field"
   }
 
   val emailValidator = {

@@ -17,10 +17,10 @@ import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import play.api.i18n.Messages.Implicits._
 
-class LoginController @Inject()(val appConfig: AppConfig,
-                                val sessionService: SessionService,
-                                val messagesApi: MessagesApi,
-                                silhouette: Silhouette[DefaultEnv]) {
+class LoginController @Inject()(cc: ControllerComponents,
+                                appConfig: AppConfig,
+                                sessionService: SessionService,
+                                silhouette: Silhouette[DefaultEnv]) extends AbstractController(cc) with I18nSupport {
   val loginForm: Form[LoginForm] = LoginForm.form
 
   def showLoginPage() = silhouette.UnsecuredAction.async { implicit request =>
@@ -40,7 +40,8 @@ class LoginController @Inject()(val appConfig: AppConfig,
             silhouette.env.authenticatorService.embed(v, Results.Redirect(routes.ManageApplicationController.manageApps()))
           }
         } yield result) recover {
-        case _: InvalidCredentialsException => Results.BadRequest(views.html.signIn("Sign in", LoginForm.form.fill(validForm)))
+        case _: InvalidCredentialsException => Results.BadRequest(views.html.signIn("Sign in",
+          LoginForm.form.fill(validForm).withGlobalError(FormKeys.invalidCredentialsKey)))
       }
     }
 

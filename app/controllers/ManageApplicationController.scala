@@ -15,7 +15,8 @@ import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
 @Singleton
-class ManageApplicationController  @Inject()(cc: ControllerComponents, applicationService: ApplicationService,
+class ManageApplicationController  @Inject()(cc: ControllerComponents,
+                                             applicationService: ApplicationService,
                                              silhouette: Silhouette[DefaultEnv]) extends AbstractController(cc) with I18nSupport {
 
   val APP_DETAILS_TAB = "APP_DETAILS_TAB"

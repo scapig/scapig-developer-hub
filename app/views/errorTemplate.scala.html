@@ -1,9 +1,8 @@
 @(title: String, message: String)
 
-<html>
-    <head><title>@title</title></head>
-    <body>
-        <h1>@title</h1>
-        <div>@message</div>
-    </body>
-</html>
+@body = {
+    <h1>@title</h1>
+    <div>@message</div>
+}
+
+@include.template(title, body)

@@ -24,3 +24,5 @@ GET     /logout                         @controllers.LoginController.logout()
 
 GET     /profile/password               @controllers.ProfileController.showChangePasswordForm()
 POST    /profile/password               @controllers.ProfileController.changePasswordAction()
+
+GET     /signedin                       @controllers.SessionController.fetchSignedInDeveloper()

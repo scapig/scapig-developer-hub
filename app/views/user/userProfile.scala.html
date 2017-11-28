@@ -1,6 +1,6 @@
 @import helper._
 
-@(form: Form[controllers.EditProfileForm])(implicit request: play.api.mvc.Request[Any], messages: Messages)
+@(loggedInUser: Developer, form: Form[controllers.EditProfileForm], saved: Option[Boolean] = None)(implicit request: play.api.mvc.Request[Any], messages: Messages)
 
 @body = {
     <div>
@@ -11,6 +11,10 @@
             @for(error <- form.errors) {
                 <p class="error-notification">@Messages(error.message)</p>
             }
+        }
+
+        @if(saved.getOrElse(false)) {
+            <p class="alert alert--success">Your changes have been saved</p>
         }
 
         <a href="/profile/password">Change Password</a>
@@ -32,4 +36,4 @@
     </div>
 }
 
-@include.template("User Profile", body)
+@include.template("User Profile", Some(loggedInUser), body)

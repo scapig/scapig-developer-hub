@@ -82,7 +82,7 @@ class ProfileControllerSpec extends UnitSpec with MockitoSugar {
       ))))
 
       status(result) shouldBe Status.SEE_OTHER
-      result.header.headers("Location") shouldBe "/profile"
+      result.header.headers("Location") shouldBe "/profile?saved=true"
       verify(sessionService).updateUserProfile(userEmail, UserProfileEditRequest("newFirstName", "newLastName"))
     }
 
@@ -120,7 +120,7 @@ class ProfileControllerSpec extends UnitSpec with MockitoSugar {
       ))))
 
       status(result) shouldBe Status.SEE_OTHER
-      result.header.headers("Location") shouldBe "/profile"
+      result.header.headers("Location") shouldBe "/login?registered=true"
       verify(sessionService).register(UserCreateRequest(userEmail, "Password", "John", "Doe"))
     }
 
@@ -183,7 +183,7 @@ class ProfileControllerSpec extends UnitSpec with MockitoSugar {
       ))))
 
       status(result) shouldBe Status.SEE_OTHER
-      result.header.headers("Location") shouldBe "/profile"
+      result.header.headers("Location") shouldBe "/profile?saved=true"
       verify(sessionService).changePassword(userEmail, ChangePasswordRequest("OldPassword", "Password"))
     }
 

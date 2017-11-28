@@ -92,7 +92,7 @@ class CustomUnsecuredErrorHandler extends UnsecuredErrorHandler {
 
 class CustomSecuredErrorHandler @Inject()() extends SecuredErrorHandler {
   override def onNotAuthenticated(implicit request: RequestHeader) = {
-    Future.successful(Results.Redirect(routes.LoginController.showLoginPage()))
+    Future.successful(Results.Redirect(routes.LoginController.showLoginPage(None)))
   }
 
   override def onNotAuthorized(implicit request: RequestHeader) = {

@@ -427,3 +427,16 @@ ul li {
 .divider--bottom {
     border-bottom: 1px solid #bfc1c3;
 }
+
+.alert--success {
+    background-color: #e9f5f4;
+    border-color: #28a197;
+}
+
+.alert {
+    clear: both;
+    border-left-width: .15789em;
+    border-left-style: solid;
+    margin: 0 0 1.05263em;
+    padding: .89474em .78947em;
+}

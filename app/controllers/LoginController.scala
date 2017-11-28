@@ -23,8 +23,8 @@ class LoginController @Inject()(cc: ControllerComponents,
                                 silhouette: Silhouette[DefaultEnv]) extends AbstractController(cc) with I18nSupport {
   val loginForm: Form[LoginForm] = LoginForm.form
 
-  def showLoginPage() = silhouette.UnsecuredAction.async { implicit request =>
-    Future.successful(Results.Ok(views.html.signIn("Sign in", loginForm)))
+  def showLoginPage(registered: Option[Boolean] = None) = silhouette.UnsecuredAction.async { implicit request =>
+    Future.successful(Results.Ok(views.html.signIn("Sign in", loginForm, registered)))
   }
 
   def login() = silhouette.UnsecuredAction.async { implicit request =>
@@ -49,7 +49,7 @@ class LoginController @Inject()(cc: ControllerComponents,
   }
 
   def logout() = silhouette.SecuredAction.async { implicit request =>
-    silhouette.env.authenticatorService.discard(request.authenticator, Results.Redirect(routes.LoginController.showLoginPage()))
+    silhouette.env.authenticatorService.discard(request.authenticator, Results.Redirect(routes.LoginController.showLoginPage(None)))
   }
 
 }

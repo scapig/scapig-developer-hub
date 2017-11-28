@@ -21,21 +21,21 @@ class ProfileController  @Inject()(cc: ControllerComponents,
                                    sessionService: SessionService,
                                    silhouette: Silhouette[DefaultEnv]) extends AbstractController(cc) with I18nSupport {
 
-  def showProfileForm() = silhouette.SecuredAction.async { implicit request =>
+  def showProfileForm(saved: Option[Boolean] = None) = silhouette.SecuredAction.async { implicit request =>
     sessionService.fetchDeveloper(request.identity.email) map { developer =>
-      Ok(views.html.user.userProfile(EditProfileForm.form.fill(EditProfileForm(developer.firstName, developer.lastName))))
+      Ok(views.html.user.userProfile(request.identity, EditProfileForm.form.fill(EditProfileForm(developer.firstName, developer.lastName)), saved))
     }
   }
 
   def editProfileAction() = silhouette.SecuredAction.async { implicit request =>
 
     def editProfileWithFormErrors(errors: Form[EditProfileForm]) = {
-      Future.successful(BadRequest(views.html.user.userProfile(errors)))
+      Future.successful(BadRequest(views.html.user.userProfile(request.identity, errors)))
     }
 
     def editProfileWithValidForm(validForm: EditProfileForm) = {
       sessionService.updateUserProfile(request.identity.email, UserProfileEditRequest(validForm.firstName, validForm.lastName))
-        .map(_ => Redirect(routes.ProfileController.showProfileForm()))
+        .map(_ => Redirect(routes.ProfileController.showProfileForm(Some(true))))
     }
 
     EditProfileForm.form.bindFromRequest.fold(editProfileWithFormErrors, editProfileWithValidForm)
@@ -52,7 +52,7 @@ class ProfileController  @Inject()(cc: ControllerComponents,
 
     def registerWithValidForm(validForm: RegisterForm) = {
       sessionService.register(UserCreateRequest(validForm.email, validForm.password, validForm.firstName, validForm.lastName))
-        .map(_ => Redirect(routes.ProfileController.showProfileForm())) recover {
+        .map(_ => Redirect(routes.LoginController.showLoginPage(Some(true)))) recover {
         case _: UserAlreadyRegisteredException => BadRequest(views.html.user.register(RegisterForm.form.fill(validForm).withGlobalError(emailAlreadyRegisteredKey)))
       }
     }
@@ -61,19 +61,19 @@ class ProfileController  @Inject()(cc: ControllerComponents,
   }
 
   def showChangePasswordForm() = silhouette.SecuredAction.async { implicit request =>
-    Future(Ok(views.html.user.changePassword(ChangePasswordForm.form)))
+    Future(Ok(views.html.user.changePassword(request.identity, ChangePasswordForm.form)))
   }
 
   def changePasswordAction() = silhouette.SecuredAction.async { implicit request =>
 
     def changePasswordWithFormErrors(errors: Form[ChangePasswordForm]) = {
-      Future.successful(BadRequest(views.html.user.changePassword(errors)))
+      Future.successful(BadRequest(views.html.user.changePassword(request.identity, errors)))
     }
 
     def changePasswordWithValidForm(validForm: ChangePasswordForm) = {
       sessionService.changePassword(request.identity.email, ChangePasswordRequest(validForm.oldPassword, validForm.password))
-        .map(_ => Redirect(routes.ProfileController.showProfileForm())) recover {
-        case _: InvalidCredentialsException => BadRequest(views.html.user.changePassword(ChangePasswordForm.form.fill(validForm).withGlobalError(passwordInvalidKey)))
+        .map(_ => Redirect(routes.ProfileController.showProfileForm(Some(true)))) recover {
+        case _: InvalidCredentialsException => BadRequest(views.html.user.changePassword(request.identity, ChangePasswordForm.form.fill(validForm).withGlobalError(passwordInvalidKey)))
       }
     }
 

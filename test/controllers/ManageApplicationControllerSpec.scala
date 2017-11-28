@@ -157,7 +157,7 @@ class ManageApplicationControllerSpec extends UnitSpec with MockitoSugar {
       val result = await(underTest.subscribe(applicationId, "aContext", "v1")(authenticatedRequest))
 
       status(result) shouldBe Status.SEE_OTHER
-      result.header.headers.get("Location") shouldBe Some(s"/applications/$applicationId?tab=APP_SUBSCRIPTIONS_TAB")
+      result.header.headers.get("Location") shouldBe Some(s"/applications/$applicationId?tab=APP_SUBSCRIPTIONS_TAB&saved=true")
     }
 
     "redirect to the login page when the user is not logged in" in new Setup {
@@ -190,7 +190,7 @@ class ManageApplicationControllerSpec extends UnitSpec with MockitoSugar {
       val result = await(underTest.unsubscribe(applicationId, "aContext", "v1")(authenticatedRequest))
 
       status(result) shouldBe Status.SEE_OTHER
-      result.header.headers.get("Location") shouldBe Some(s"/applications/$applicationId?tab=APP_SUBSCRIPTIONS_TAB")
+      result.header.headers.get("Location") shouldBe Some(s"/applications/$applicationId?tab=APP_SUBSCRIPTIONS_TAB&saved=true")
     }
 
     "redirect to the login page when the user is not logged in" in new Setup {
@@ -244,7 +244,7 @@ class ManageApplicationControllerSpec extends UnitSpec with MockitoSugar {
       ))))
 
       status(result) shouldBe Status.SEE_OTHER
-      result.header.headers("Location") shouldBe s"/applications/$applicationId"
+      result.header.headers("Location") shouldBe s"/applications/$applicationId?saved=true"
     }
 
     "display the application form when the name is not set" in new Setup {

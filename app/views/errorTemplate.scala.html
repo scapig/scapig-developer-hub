@@ -1,8 +1,8 @@
-@(title: String, message: String)
+@(title: String, loggedInUser: Option[Developer], message: String)
 
 @body = {
     <h1>@title</h1>
     <div>@message</div>
 }
 
-@include.template(title, body)
+@include.template(title, loggedInUser, body)

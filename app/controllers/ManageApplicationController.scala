@@ -26,18 +26,18 @@ class ManageApplicationController  @Inject()(cc: ControllerComponents,
 
   def manageApps() = silhouette.SecuredAction.async { implicit request =>
     applicationService.fetchByCollaboratorEmail(request.identity.email) map { applications =>
-      Ok(views.html.applications.manageApplications(applications.map(ApplicationSummary(_, request.identity.email))))
+      Ok(views.html.applications.manageApplications(request.identity, applications.map(ApplicationSummary(_, request.identity.email))))
     }
   }
 
-  def editApplication(id: String, tab: Option[String] = None) = {
+  def editApplication(id: String, tab: Option[String] = None, saved: Option[Boolean] = None) = {
     silhouette.SecuredAction(WithApplication(applicationService.fetchById(id))).async { implicit request =>
       applicationService.fetchApplicationViewData(id) map { applicationViewData =>
         tab match {
-          case Some(`APP_SUBSCRIPTIONS_TAB`) => Ok(views.html.applications.applicationSubscriptions(applicationViewData))
-          case Some(`PRODUCTION_CREDENTIALS_TAB`) => Ok(views.html.applications.productionCredentials(applicationViewData))
-          case Some(`SANDBOX_CREDENTIALS_TAB`) => Ok(views.html.applications.sandboxCredentials(applicationViewData))
-          case _ => Ok(views.html.applications.applicationDetails(applicationViewData, EditApplicationForm.form.fill(EditApplicationForm(applicationViewData.app))))
+          case Some(`APP_SUBSCRIPTIONS_TAB`) => Ok(views.html.applications.applicationSubscriptions(request.identity, applicationViewData, saved))
+          case Some(`PRODUCTION_CREDENTIALS_TAB`) => Ok(views.html.applications.productionCredentials(request.identity, applicationViewData))
+          case Some(`SANDBOX_CREDENTIALS_TAB`) => Ok(views.html.applications.sandboxCredentials(request.identity, applicationViewData))
+          case _ => Ok(views.html.applications.applicationDetails(request.identity, applicationViewData, EditApplicationForm.form.fill(EditApplicationForm(applicationViewData.app)), saved))
         }
       } recover {
         case _: ApplicationNotFoundException => Results.NotFound("Application not found")
@@ -48,7 +48,7 @@ class ManageApplicationController  @Inject()(cc: ControllerComponents,
   def subscribe(id: String, context: String, version: String) = {
     silhouette.SecuredAction(WithApplication(applicationService.fetchById(id))).async { implicit request =>
       applicationService.subscribe(id, context, version) map { _ =>
-        Redirect(routes.ManageApplicationController.editApplication(id, Some(APP_SUBSCRIPTIONS_TAB)))
+        Redirect(routes.ManageApplicationController.editApplication(id, Some(APP_SUBSCRIPTIONS_TAB), Some(true)))
       }
     }
   }
@@ -56,24 +56,24 @@ class ManageApplicationController  @Inject()(cc: ControllerComponents,
   def unsubscribe(id: String, context: String, version: String) = {
     silhouette.SecuredAction(WithApplication(applicationService.fetchById(id))).async { implicit request =>
       applicationService.unsubscribe(id, context, version) map { _ =>
-        Redirect(routes.ManageApplicationController.editApplication(id, Some(APP_SUBSCRIPTIONS_TAB)))
+        Redirect(routes.ManageApplicationController.editApplication(id, Some(APP_SUBSCRIPTIONS_TAB), Some(true)))
       }
     }
   }
 
   def createApplicationForm() = silhouette.SecuredAction.async { implicit request =>
-    Future.successful(Ok(views.html.applications.addApplication(AddApplicationForm.form)))
+    Future.successful(Ok(views.html.applications.addApplication(request.identity, AddApplicationForm.form)))
   }
 
   def createApplicationAction() = silhouette.SecuredAction.async { implicit request =>
 
     def addApplicationWithFormErrors(errors: Form[AddApplicationForm]) = {
-      Future.successful(BadRequest(views.html.applications.addApplication(errors)))
+      Future.successful(BadRequest(views.html.applications.addApplication(request.identity, errors)))
     }
 
     def addApplicationWithValidForm(validForm: AddApplicationForm) = {
       applicationService.createApplication(CreateApplicationRequest(validForm, request.identity.email))
-        .map(appCreated => Redirect(routes.ManageApplicationController.editApplication(appCreated.id.toString, None)))
+        .map(appCreated => Redirect(routes.ManageApplicationController.editApplication(appCreated.id.toString, None, Some(true))))
     }
     AddApplicationForm.form.bindFromRequest.fold(addApplicationWithFormErrors, addApplicationWithValidForm)
   }
@@ -82,13 +82,13 @@ class ManageApplicationController  @Inject()(cc: ControllerComponents,
     silhouette.SecuredAction(WithApplication(applicationService.fetchById(id))).async { implicit request =>
       def updateApplicationWithFormErrors(errors: Form[EditApplicationForm]) = {
         applicationService.fetchApplicationViewData(id) map { applicationViewData =>
-          BadRequest(views.html.applications.applicationDetails(applicationViewData, errors))
+          BadRequest(views.html.applications.applicationDetails(request.identity, applicationViewData, errors))
         }
       }
 
       def updateApplicationWithValidForm(validForm: EditApplicationForm) = {
         applicationService.updateApplication(id, UpdateApplicationRequest(validForm))
-          .map(appUpdated => Redirect(routes.ManageApplicationController.editApplication(appUpdated.id.toString, None)))
+          .map(appUpdated => Redirect(routes.ManageApplicationController.editApplication(appUpdated.id.toString, None, Some(true))))
       }
       EditApplicationForm.form.bindFromRequest.fold(updateApplicationWithFormErrors, updateApplicationWithValidForm)
     }

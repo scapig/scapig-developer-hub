@@ -1,4 +1,4 @@
-@(heading: String, form: Form[controllers.LoginForm])(implicit request: play.api.mvc.Request[Any], messages: Messages)
+@(heading: String, form: Form[controllers.LoginForm], registered: Option[Boolean] = None)(implicit request: play.api.mvc.Request[Any], messages: Messages)
 
 @body = {
     <div>
@@ -8,6 +8,10 @@
                 @for(error <- form.errors) {
                     <p class="error-notification">@Messages(error.message)</p>
                 }
+            }
+
+            @if(registered.getOrElse(false)) {
+                <p class="alert alert--success">You have successfully registered.</p>
             }
 
             <div class="form-field-group">
@@ -32,4 +36,4 @@
     </div>
 }
 
-@include.template("Login", body)
+@include.template("Login", None, body)

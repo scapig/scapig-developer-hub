@@ -1,6 +1,6 @@
 @import helper._
 
-@(applicationView: ApplicationViewData)(implicit request: play.api.mvc.Request[Any])
+@(loggedInUser: Developer, applicationView: ApplicationViewData, saved: Option[Boolean] = None)(implicit request: play.api.mvc.Request[Any])
 
 @body = {
     <ul class="tabs-nav">
@@ -9,6 +9,11 @@
         <li aria-selected="false" role="tab" class="tab" aria-controls="subscriptions" tabindex="2"><a class="tabs-nav__tab" href="/applications/@applicationView.app.id?tab=SANDBOX_CREDENTIALS_TAB">Sandbox Credentials</a></li>
         <li aria-selected="false" role="tab" class="tab" aria-controls="subscriptions" tabindex="3"><a class="tabs-nav__tab" href="/applications/@applicationView.app.id?tab=PRODUCTION_CREDENTIALS_TAB">Production Credentials</a></li>
     </ul>
+
+    @if(saved.getOrElse(false)) {
+        <p></p>
+        <p class="alert alert--success">Your changes have been saved</p>
+    }
 
     <p>
         You have to subscribe to an API so your application can access it.
@@ -63,4 +68,4 @@
     }
 }
 
-@include.template("Application " + applicationView.app.name, body)
+@include.template("Application " + applicationView.app.name, Some(loggedInUser), body)

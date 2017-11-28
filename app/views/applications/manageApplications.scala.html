@@ -1,6 +1,6 @@
 @import models.ApplicationSummary
 
-@(applications: Seq[ApplicationSummary])(implicit request: play.api.mvc.Request[Any])
+@(loggedInUser: Developer, applications: Seq[ApplicationSummary])(implicit request: play.api.mvc.Request[Any])
 
 @body = {
     <a class="button" href="@{routes.ManageApplicationController.createApplicationForm()}">Add an application</a>
@@ -19,7 +19,7 @@
         @for(app<-applications) {
             <tr>
                 <td>
-                    <a href="@{routes.ManageApplicationController.editApplication(app.id, None)}">@app.name</a>
+                    <a href="@{routes.ManageApplicationController.editApplication(app.id, None, None)}">@app.name</a>
                 </td>
                 <td>@app.description</td>
                 <td>
@@ -31,4 +31,4 @@
     </table>
 }
 
-@include.template(s"Manage Applications", body)
+@include.template(s"Manage Applications", Some(loggedInUser), body)

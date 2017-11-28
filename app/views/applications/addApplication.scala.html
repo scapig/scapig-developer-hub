@@ -1,6 +1,6 @@
 @import helper._
 
-@(form: Form[controllers.AddApplicationForm])(implicit request: play.api.mvc.Request[Any], messages: Messages)
+@(loggedInUser: Developer, form: Form[controllers.AddApplicationForm])(implicit request: play.api.mvc.Request[Any], messages: Messages)
 
 @body = {
     <div>
@@ -31,4 +31,4 @@
     </div>
 }
 
-@include.template("Add an application", body)
+@include.template("Add an application", Some(loggedInUser), body)

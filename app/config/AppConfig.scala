@@ -3,7 +3,6 @@ package config
 import javax.inject.Inject
 
 import play.api.Configuration
-import play.twirl.api.Html
 
 class AppConfig @Inject()(configuration: Configuration) {
   lazy val homepage = configuration.getOptional[String]("homepage")
@@ -16,6 +15,4 @@ class AppConfig @Inject()(configuration: Configuration) {
     val port = configuration.get[String](s"services.$serviceName.port")
     s"$method://$host:$port"
   }
-
-  def notFoundPage(): Html = views.html.errorTemplate("Not Found", "Page not found")
 }

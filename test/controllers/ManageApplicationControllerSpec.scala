@@ -74,7 +74,7 @@ class ManageApplicationControllerSpec extends UnitSpec with MockitoSugar {
       val result = await(underTest.manageApps()(unauthenticatedRequest))
 
       status(result) shouldBe Status.SEE_OTHER
-      result.header.headers("Location") shouldBe "/login"
+      result.header.headers("Location") shouldBe "/developer/login"
     }
   }
 
@@ -96,7 +96,7 @@ class ManageApplicationControllerSpec extends UnitSpec with MockitoSugar {
       val result = await(underTest.editApplication(applicationId)(addCSRFToken(unauthenticatedRequest)))
 
       status(result) shouldBe Status.SEE_OTHER
-      result.header.headers("Location") shouldBe "/login"
+      result.header.headers("Location") shouldBe "/developer/login"
     }
 
     "display NotFound page when the application does not belong to the user" in new Setup {
@@ -157,7 +157,7 @@ class ManageApplicationControllerSpec extends UnitSpec with MockitoSugar {
       val result = await(underTest.subscribe(applicationId, "aContext", "v1")(authenticatedRequest))
 
       status(result) shouldBe Status.SEE_OTHER
-      result.header.headers.get("Location") shouldBe Some(s"/applications/$applicationId?tab=APP_SUBSCRIPTIONS_TAB&saved=true")
+      result.header.headers.get("Location") shouldBe Some(s"/developer/applications/$applicationId?tab=APP_SUBSCRIPTIONS_TAB&saved=true")
     }
 
     "redirect to the login page when the user is not logged in" in new Setup {
@@ -167,7 +167,7 @@ class ManageApplicationControllerSpec extends UnitSpec with MockitoSugar {
       val result = await(underTest.subscribe(applicationId, "aContext", "v1")(unauthenticatedRequest))
 
       status(result) shouldBe Status.SEE_OTHER
-      result.header.headers("Location") shouldBe "/login"
+      result.header.headers("Location") shouldBe "/developer/login"
     }
 
     "display Page Not Found page when the application does not belong to the user" in new Setup {
@@ -190,7 +190,7 @@ class ManageApplicationControllerSpec extends UnitSpec with MockitoSugar {
       val result = await(underTest.unsubscribe(applicationId, "aContext", "v1")(authenticatedRequest))
 
       status(result) shouldBe Status.SEE_OTHER
-      result.header.headers.get("Location") shouldBe Some(s"/applications/$applicationId?tab=APP_SUBSCRIPTIONS_TAB&saved=true")
+      result.header.headers.get("Location") shouldBe Some(s"/developer/applications/$applicationId?tab=APP_SUBSCRIPTIONS_TAB&saved=true")
     }
 
     "redirect to the login page when the user is not logged in" in new Setup {
@@ -200,7 +200,7 @@ class ManageApplicationControllerSpec extends UnitSpec with MockitoSugar {
       val result = await(underTest.unsubscribe(applicationId, "aContext", "v1")(unauthenticatedRequest))
 
       status(result) shouldBe Status.SEE_OTHER
-      result.header.headers("Location") shouldBe "/login"
+      result.header.headers("Location") shouldBe "/developer/login"
     }
 
     "display Page Not Found page when the application does not belong to the user" in new Setup {
@@ -227,7 +227,7 @@ class ManageApplicationControllerSpec extends UnitSpec with MockitoSugar {
       val result = await(underTest.createApplicationForm()(addCSRFToken(unauthenticatedRequest)))
 
       status(result) shouldBe Status.SEE_OTHER
-      result.header.headers("Location") shouldBe "/login"
+      result.header.headers("Location") shouldBe "/developer/login"
     }
 
   }
@@ -244,7 +244,7 @@ class ManageApplicationControllerSpec extends UnitSpec with MockitoSugar {
       ))))
 
       status(result) shouldBe Status.SEE_OTHER
-      result.header.headers("Location") shouldBe s"/applications/$applicationId?saved=true"
+      result.header.headers("Location") shouldBe s"/developer/applications/$applicationId?saved=true"
     }
 
     "display the application form when the name is not set" in new Setup {
@@ -264,7 +264,7 @@ class ManageApplicationControllerSpec extends UnitSpec with MockitoSugar {
       ))))
 
       status(result) shouldBe Status.SEE_OTHER
-      result.header.headers("Location") shouldBe "/login"
+      result.header.headers("Location") shouldBe "/developer/login"
     }
 
   }

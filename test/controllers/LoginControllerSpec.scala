@@ -69,7 +69,7 @@ class LoginControllerSpec extends UnitSpec with MockitoSugar {
       ))))
 
       status(result) shouldBe Status.SEE_OTHER
-      result.header.headers("Location") shouldBe "/applications"
+      result.header.headers("Location") shouldBe "/developer/applications"
     }
 
     "display the login page when the emailaddress is not set" in new Setup {

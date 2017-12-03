@@ -1,0 +1,28 @@
+
+GET     /assets/*file                   controllers.Assets.versioned(path="/public", file: Asset)
+
+GET     /applications/add               @controllers.ManageApplicationController.createApplicationForm()
+POST    /applications/add               @controllers.ManageApplicationController.createApplicationAction()
+
+GET     /applications                   @controllers.ManageApplicationController.manageApps()
+GET     /applications/:id               @controllers.ManageApplicationController.editApplication(id: String, tab: Option[String], saved: Option[Boolean])
+POST    /applications/:id               @controllers.ManageApplicationController.updateApplicationAction(id: String)
+
+POST    /applications/:id/subscribe    @controllers.ManageApplicationController.subscribe(id: String, context: String, version: String)
+POST    /applications/:id/unsubscribe  @controllers.ManageApplicationController.unsubscribe(id: String, context: String, version: String)
+
+GET     /login                          @controllers.LoginController.showLoginPage(registered: Option[Boolean])
+POST    /login                          @controllers.LoginController.login()
+
+GET     /profile                        @controllers.ProfileController.showProfileForm(saved: Option[Boolean])
+POST    /profile                        @controllers.ProfileController.editProfileAction()
+
+GET     /register                       @controllers.ProfileController.showRegistrationForm()
+POST    /register                       @controllers.ProfileController.registerAction()
+
+GET     /logout                         @controllers.LoginController.logout()
+
+GET     /profile/password               @controllers.ProfileController.showChangePasswordForm()
+POST    /profile/password               @controllers.ProfileController.changePasswordAction()
+
+GET     /signedin                       @controllers.SessionController.fetchSignedInDeveloper()

@@ -3,13 +3,11 @@ package services
 import connectors.{ApiDefinitionConnector, ApplicationConnector}
 import models.{APIVersionSubscription, _}
 import org.joda.time.DateTime
-import org.mockito.{BDDMockito, Mockito}
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito.verify
 import org.scalatest.mockito.MockitoSugar
 import utils.UnitSpec
 
-import scala.concurrent.Future
 import scala.concurrent.Future.{failed, successful}
 
 class ApplicationServiceSpec extends UnitSpec with MockitoSugar {
@@ -22,7 +20,7 @@ class ApplicationServiceSpec extends UnitSpec with MockitoSugar {
     ApplicationCredentials(prodCredentials, sandboxCredentials), DateTime.now(), RateLimitTier.BRONZE)
   val applicationId = application.id.toString
 
-  val api1 = APIDefinition("api1", "apiContext1", Seq(APIVersion("v1", APIStatus.PUBLISHED), APIVersion("v2", APIStatus.PROTOTYPED)))
+  val api1 = APIDefinition("api1", "API 1", "apiContext1", Seq(APIVersion("v1", APIStatus.PUBLISHED, Seq.empty), APIVersion("v2", APIStatus.PROTOTYPED, Seq.empty)))
 
   trait Setup {
     val applicationConnector = mock[ApplicationConnector]
@@ -42,7 +40,7 @@ class ApplicationServiceSpec extends UnitSpec with MockitoSugar {
   }
 
   "fetchApplicationViewData" should {
-    val api2 = APIDefinition("api2", "apiContext2", Seq(APIVersion("v1", APIStatus.PUBLISHED)))
+    val api2 = APIDefinition("api2", "API 2", "apiContext2", Seq(APIVersion("v1", APIStatus.PUBLISHED, Seq.empty)))
     val subscribedApi = APIIdentifier("apiContext1", "v1")
 
     "return an ApplicationViewData with the subscribed APIs when the application exists" in new Setup {
@@ -54,11 +52,11 @@ class ApplicationServiceSpec extends UnitSpec with MockitoSugar {
 
       result shouldBe ApplicationViewData(application, Seq(
         APISubscription("api1", "apiContext1", Seq(
-          APIVersionSubscription(APIVersion("v1", APIStatus.PUBLISHED), subscribed = true),
-          APIVersionSubscription(APIVersion("v2", APIStatus.PROTOTYPED), subscribed = false)
+          APIVersionSubscription(APIVersion("v1", APIStatus.PUBLISHED, Seq.empty), subscribed = true),
+          APIVersionSubscription(APIVersion("v2", APIStatus.PROTOTYPED, Seq.empty), subscribed = false)
         )),
         APISubscription("api2", "apiContext2", Seq(
-          APIVersionSubscription(APIVersion("v1", APIStatus.PUBLISHED), subscribed = false)
+          APIVersionSubscription(APIVersion("v1", APIStatus.PUBLISHED, Seq.empty), subscribed = false)
         ))))
     }
 
@@ -71,7 +69,7 @@ class ApplicationServiceSpec extends UnitSpec with MockitoSugar {
 
   "subscribe" should {
     "subscribe the application to the API" in new Setup {
-      given(apiDefinitionConnector.fetchApi("aContext", "v1")).willReturn(successful(api1))
+      given(apiDefinitionConnector.fetchApi("aContext")).willReturn(successful(api1))
       given(applicationConnector.subscribeToApi(applicationId, APIIdentifier("aContext", "v1"))).willReturn(successful(HasSucceeded))
 
       val result = await(underTest.subscribe(applicationId, "aContext", "v1"))
@@ -81,15 +79,23 @@ class ApplicationServiceSpec extends UnitSpec with MockitoSugar {
     }
 
     "fail with ApiNotFoundException when the API does not exist" in new Setup {
-      given(apiDefinitionConnector.fetchApi("aContext", "v1")).willReturn(failed(ApiNotFoundException()))
+      given(apiDefinitionConnector.fetchApi("aContext")).willReturn(failed(ApiNotFoundException()))
 
       intercept[ApiNotFoundException] {
         await(underTest.subscribe(applicationId, "aContext", "v1"))
       }
     }
 
+    "fail with ApiNotFoundException when the Version does not exist" in new Setup {
+      given(apiDefinitionConnector.fetchApi("aContext")).willReturn(successful(api1))
+
+      intercept[ApiNotFoundException] {
+        await(underTest.subscribe(applicationId, "aContext", "anotherVersion"))
+      }
+    }
+
     "fail with ApplicationNotFoundException when the API does not exist" in new Setup {
-      given(apiDefinitionConnector.fetchApi("aContext", "v1")).willReturn(successful(api1))
+      given(apiDefinitionConnector.fetchApi("aContext")).willReturn(successful(api1))
       given(applicationConnector.subscribeToApi(applicationId, APIIdentifier("aContext", "v1"))).willReturn(failed(ApplicationNotFoundException()))
 
       intercept[ApplicationNotFoundException] {
@@ -100,7 +106,7 @@ class ApplicationServiceSpec extends UnitSpec with MockitoSugar {
 
   "unsubscribe" should {
     "unsubscribe the application to the API" in new Setup {
-      given(apiDefinitionConnector.fetchApi("aContext", "v1")).willReturn(successful(api1))
+      given(apiDefinitionConnector.fetchApi("aContext")).willReturn(successful(api1))
       given(applicationConnector.unsubscribeToApi(applicationId, APIIdentifier("aContext", "v1"))).willReturn(successful(HasSucceeded))
 
       val result = await(underTest.unsubscribe(applicationId, "aContext", "v1"))
@@ -110,15 +116,23 @@ class ApplicationServiceSpec extends UnitSpec with MockitoSugar {
     }
 
     "fail with ApiNotFoundException when the API does not exist" in new Setup {
-      given(apiDefinitionConnector.fetchApi("aContext", "v1")).willReturn(failed(ApiNotFoundException()))
+      given(apiDefinitionConnector.fetchApi("aContext")).willReturn(failed(ApiNotFoundException()))
 
       intercept[ApiNotFoundException] {
         await(underTest.unsubscribe(applicationId, "aContext", "v1"))
       }
     }
 
+    "fail with ApiNotFoundException when the Version does not exist" in new Setup {
+      given(apiDefinitionConnector.fetchApi("aContext")).willReturn(successful(api1))
+
+      intercept[ApiNotFoundException] {
+        await(underTest.unsubscribe(applicationId, "aContext", "anotherVersion"))
+      }
+    }
+
     "fail with ApplicationNotFoundException when the API does not exist" in new Setup {
-      given(apiDefinitionConnector.fetchApi("aContext", "v1")).willReturn(successful(api1))
+      given(apiDefinitionConnector.fetchApi("aContext")).willReturn(successful(api1))
       given(applicationConnector.unsubscribeToApi(applicationId, APIIdentifier("aContext", "v1"))).willReturn(failed(ApplicationNotFoundException()))
 
       intercept[ApplicationNotFoundException] {

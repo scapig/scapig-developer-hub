@@ -33,14 +33,16 @@ class ApplicationService @Inject()(applicationConnector: ApplicationConnector, a
 
   def subscribe(applicationId: String, context: String, version: String): Future[HasSucceeded] = {
     for {
-      api <- apiDefinitionConnector.fetchApi(context, version)
+      api <- apiDefinitionConnector.fetchApi(context)
+      _ = if(!api.versions.exists(_.version == version)) throw ApiNotFoundException()
       hasSucceeded <- applicationConnector.subscribeToApi(applicationId, APIIdentifier(context, version))
     } yield hasSucceeded
   }
 
   def unsubscribe(applicationId: String, context: String, version: String): Future[HasSucceeded] = {
     for {
-      api <- apiDefinitionConnector.fetchApi(context, version)
+      api <- apiDefinitionConnector.fetchApi(context)
+      _ = if(!api.versions.exists(_.version == version)) throw ApiNotFoundException()
       hasSucceeded <- applicationConnector.unsubscribeToApi(applicationId, APIIdentifier(context, version))
     } yield hasSucceeded
   }

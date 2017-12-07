@@ -18,6 +18,8 @@ scalaVersion := "2.12.2"
 
 libraryDependencies ++= Seq( ws, guice, play.sbt.PlayImport.ehcache )
 libraryDependencies += "com.typesafe.play" %% "play-json-joda" % "2.6.0"
+libraryDependencies += "org.raml" % "raml-parser-2" % "1.0.3"
+
 libraryDependencies += "com.mohiva" %% "play-silhouette" % "5.0.2"
 libraryDependencies += "com.mohiva" %% "play-silhouette-password-bcrypt" % "5.0.2"
 libraryDependencies += "com.mohiva" %% "play-silhouette-persistence" % "5.0.2"

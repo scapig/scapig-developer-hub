@@ -1,0 +1,104 @@
+#%RAML 1.0
+---
+
+title: Calendar API
+description: My Calendar API
+version: 2.0
+protocols: [ HTTPS ]
+baseUri: https://api.service.hmrc.gov.uk/
+
+(annotations.context): calendar
+(annotations.serviceUrl): http://localhost:8080
+(annotations.status): PUBLISHED
+(annotations.scopes):
+  -
+    key: "read:calendar"
+    name: "See calendar"
+
+documentation:
+ - title: Overview
+   content: This is a calendar API
+
+mediaType: [ application/json, application/hal+json ]
+
+uses:
+  sec: https://bitbucket.org/tomvdv59/raml-files/raw/6eceac84b37317e438c05e2f835c1a92f0a8b0e9/tapi/securitySchemes.raml
+  headers: https://bitbucket.org/tomvdv59/raml-files/raw/6eceac84b37317e438c05e2f835c1a92f0a8b0e9/tapi/headers.raml
+  annotations: https://bitbucket.org/tomvdv59/raml-files/raw/6eceac84b37317e438c05e2f835c1a92f0a8b0e9/tapi/annotations.raml
+
+/calendar:
+  /today:
+    get:
+      displayName: Get today's date
+      description: This returns today
+      is: [headers.acceptHeader]
+      securedBy: [ sec.oauth_2_0: { scopes: [ "read:calendar" ] } ]
+      headers:
+        Authorization:
+          description: OAuth 2.0 Bearer Token with the read:calendar scope.
+          type: string
+          required: true
+          example: Bearer <BEARER_TOKEN>
+      responses:
+        200:
+          description: Today's date
+          body:
+            application/json:
+              example: |
+                {
+                  "_links": {
+                    "match": {
+                      "href": "/individuals/matching/",
+                      "name": "POST",
+                      "title": "Match individual"
+                    },
+                    "self": {
+                      "href": "/individuals/"
+                    }
+                  }
+                }
+              type: |
+                {
+                  "$schema": "http://json-schema.org/draft-04/schema#",
+                  "description": "Individual",
+                  "type": "object",
+                  "properties": {
+                    "_links": {
+                      "type": "object",
+                      "properties": {
+                        "self": {
+                          "type": "object",
+                          "description": "HAL compliant. Refers to itself",
+                          "properties": {
+                            "href": {
+                              "type": "string",
+                              "example": "/individuals/"
+                            }
+                          },
+                          "required": ["href"]
+                        },
+                        "match": {
+                          "type": "object",
+                          "description": "The URI for the resource to match individual's details.",
+                          "properties": {
+                            "href": {
+                              "type": "string",
+                              "example": "/individuals/matching/"
+                            },
+                            "name": {
+                              "type": "string",
+                              "example": "POST"
+                            },
+                            "title": {
+                              "type": "string",
+                              "example": "Match individual"
+                            }
+                          },
+                          "required": ["href"]
+                        }
+                      },
+                      "required": ["self", "match"]
+                    }
+                  },
+                  "required": ["_links"]
+                }

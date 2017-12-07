@@ -23,8 +23,8 @@ class ApiDefinitionConnector @Inject()(appConfig: AppConfig, wsClient: WSClient)
     }
   }
 
-  def fetchApi(context: String, version: String): Future[APIDefinition] = {
-    wsClient.url(s"$serviceUrl/api-definition?context=$context&version=$version").get() map {
+  def fetchApi(context: String): Future[APIDefinition] = {
+    wsClient.url(s"$serviceUrl/api-definition?context=$context").get() map {
       case response if response.status == Status.OK => Json.parse(response.body).as[APIDefinition]
       case response if response.status == Status.NOT_FOUND => throw ApiNotFoundException()
       case r: WSResponse => throw new RuntimeException(s"Invalid response from tapi-definition ${r.status} ${r.body}")

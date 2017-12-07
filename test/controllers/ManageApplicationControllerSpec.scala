@@ -32,7 +32,7 @@ class ManageApplicationControllerSpec extends UnitSpec with MockitoSugar {
     ApplicationCredentials(prodCredentials, sandboxCredentials), DateTime.now(), RateLimitTier.BRONZE)
   val applicationId = application.id.toString
 
-  val apiSubscription = APISubscription("api1", "apiContext1", Seq(APIVersionSubscription(APIVersion("v1", APIStatus.PROTOTYPED), subscribed = true)))
+  val apiSubscription = APISubscription("api1", "apiContext1", Seq(APIVersionSubscription(APIVersion("v1", APIStatus.PROTOTYPED, Seq.empty), subscribed = true)))
   val applicationViewData = ApplicationViewData(application, Seq(apiSubscription))
 
   val loginInfo = LoginInfo(CredentialsProvider.ID, UUID.randomUUID().toString)

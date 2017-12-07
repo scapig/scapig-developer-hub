@@ -22,7 +22,7 @@ class ApiDefinitionConnectorSpec extends UnitSpec with BeforeAndAfterAll with Be
     .build()
   val wireMockServer = new WireMockServer(wireMockConfig().port(port))
 
-  val api = APIDefinition("apiName", "apiContext", Seq(APIVersion("v1", APIStatus.PUBLISHED)))
+  val api = APIDefinition("apiName", "API 1", "apiContext", Seq(APIVersion("v1", APIStatus.PUBLISHED, Seq.empty)))
 
   override def beforeAll {
     configureFor(port)
@@ -62,7 +62,7 @@ class ApiDefinitionConnectorSpec extends UnitSpec with BeforeAndAfterAll with Be
         .withStatus(Status.OK)
         .withBody(Json.toJson(api).toString())))
 
-      val result = await(apiDefinitionConnector.fetchApi("aContext", "v1"))
+      val result = await(apiDefinitionConnector.fetchApi("aContext"))
 
       result shouldBe api
     }
@@ -73,7 +73,7 @@ class ApiDefinitionConnectorSpec extends UnitSpec with BeforeAndAfterAll with Be
         .willReturn(aResponse()
           .withStatus(Status.NOT_FOUND)))
 
-      intercept[ApiNotFoundException]{await(apiDefinitionConnector.fetchApi("aContext", "v1"))}
+      intercept[ApiNotFoundException]{await(apiDefinitionConnector.fetchApi("aContext"))}
     }
 
   }

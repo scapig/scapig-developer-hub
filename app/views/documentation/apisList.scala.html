@@ -1,7 +1,6 @@
 @(apis: Seq[APIDefinition], loggedInUser: Option[Developer])(implicit request: play.api.mvc.Request[Any], messages: Messages)
 
 @body = {
-    <h1>API Documentation</h1>
     <ul>
         @for(api <- apis) {
             <li class="border__top-bottom">

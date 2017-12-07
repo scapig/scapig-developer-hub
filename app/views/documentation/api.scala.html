@@ -2,7 +2,6 @@
 @(api: APIDefinition, raml: RAML, loggedInUser: Option[Developer])(implicit request: play.api.mvc.Request[Any], messages: Messages)
 
 @body = {
-    <h1>@raml.title.value()</h1>
     <div class="form-field" align="right">
         <select id="version" name="version" class="form-control" onchange="location = '/apis/calendar?version=' + this.options[this.selectedIndex].value;">
             @for(version <- api.versions) {

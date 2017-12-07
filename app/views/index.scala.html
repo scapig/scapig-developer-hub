@@ -1,0 +1,12 @@
+@(loggedInUser: Option[Developer])(implicit request: play.api.mvc.Request[Any], messages: Messages)
+
+@body = {
+    <div>
+        API Platform example
+        <a href="/applications/add">Add an Application</a>
+        <a href="/applications">Manage Applications</a>
+        <a href="/apis">API Documentation</a>
+    </div>
+}
+
+@include.template("API Platform", None, body)

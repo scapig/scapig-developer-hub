@@ -29,3 +29,5 @@ GET     /signedin                       @controllers.SessionController.fetchSign
 
 GET     /apis                           @controllers.ApiDocumentationController.listApis()
 GET     /apis/:context                  @controllers.ApiDocumentationController.getApi(context: String, version: Option[String])
+
+GET     /                               @controllers.ApiDocumentationController.index()

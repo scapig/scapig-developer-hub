@@ -8,7 +8,9 @@ import models.ApiNotFoundException
 import play.api.i18n.I18nSupport
 import play.api.mvc.{AbstractController, ControllerComponents}
 import services.{ApiDefinitionService, RamlService, SessionService}
+
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 @Singleton
 class ApiDocumentationController @Inject()(cc: ControllerComponents,
@@ -31,5 +33,9 @@ class ApiDocumentationController @Inject()(cc: ControllerComponents,
     } yield Ok(views.html.documentation.api(api, raml, request.identity))) recover {
       case _: ApiNotFoundException => NotFound
     }
+  }
+
+  def index() = silhouette.UserAwareAction.async { implicit request =>
+    Future.successful(Ok(views.html.index(request.identity)))
   }
 }

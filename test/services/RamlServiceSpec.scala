@@ -1,6 +1,6 @@
 package services
 
-import connectors.TapiPublisherConnector
+import connectors.PublisherConnector
 import models.{ApiNotFoundException, RamlParseException}
 import org.mockito.BDDMockito.given
 import org.scalatest.mockito.MockitoSugar
@@ -18,15 +18,15 @@ class RamlServiceSpec extends UnitSpec with MockitoSugar {
   val apiVersion = "2.0"
 
   trait Setup {
-    val tapiPublisherConnector = mock[TapiPublisherConnector]
+    val publisherConnector = mock[PublisherConnector]
     val ramlLoader = mock[StringRamlLoader]
 
-    val underTest = new RamlService(tapiPublisherConnector, ramlLoader)
+    val underTest = new RamlService(publisherConnector, ramlLoader)
   }
 
   "fetchRaml" should {
     "return the RAML" in new Setup {
-      given(tapiPublisherConnector.fetchRaml(apiContext, apiVersion)).willReturn(successful(Some(ramlContent)))
+      given(publisherConnector.fetchRaml(apiContext, apiVersion)).willReturn(successful(Some(ramlContent)))
       given(ramlLoader.load(ramlContent)).willReturn(Success(raml))
 
       val result = await(underTest.fetchRaml(apiContext, apiVersion))
@@ -35,13 +35,13 @@ class RamlServiceSpec extends UnitSpec with MockitoSugar {
     }
 
     "fail with APINotFoundException when the RAML can not be found" in new Setup {
-      given(tapiPublisherConnector.fetchRaml(apiContext, apiVersion)).willReturn(successful(None))
+      given(publisherConnector.fetchRaml(apiContext, apiVersion)).willReturn(successful(None))
 
       intercept[ApiNotFoundException]{await(underTest.fetchRaml(apiContext, apiVersion))}
     }
 
     "fail with APINotFoundException when the RAML can not be loaded" in new Setup {
-      given(tapiPublisherConnector.fetchRaml(apiContext, apiVersion)).willReturn(successful(Some(ramlContent)))
+      given(publisherConnector.fetchRaml(apiContext, apiVersion)).willReturn(successful(Some(ramlContent)))
       given(ramlLoader.load(ramlContent)).willReturn(Failure(RamlParseException("test error")))
 
       intercept[ApiNotFoundException]{await(underTest.fetchRaml(apiContext, apiVersion))}

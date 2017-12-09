@@ -9,13 +9,13 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.mvc.Http.Status
 import utils.UnitSpec
 
-class TapiPublisherConnectorSpec extends UnitSpec with BeforeAndAfterAll with BeforeAndAfterEach {
+class PublisherConnectorSpec extends UnitSpec with BeforeAndAfterAll with BeforeAndAfterEach {
   val port = 7001
 
 
   val playApplication = new GuiceApplicationBuilder()
-    .configure("services.tapi-publisher.host" -> "localhost")
-    .configure("services.tapi-publisher.port" -> "7001")
+    .configure("services.scapig-publisher.host" -> "localhost")
+    .configure("services.scapig-publisher.port" -> "7001")
     .build()
   val wireMockServer = new WireMockServer(wireMockConfig().port(port))
 
@@ -35,7 +35,7 @@ class TapiPublisherConnectorSpec extends UnitSpec with BeforeAndAfterAll with Be
   }
 
   trait Setup {
-    val tapiPublisherConnector = playApplication.injector.instanceOf[TapiPublisherConnector]
+    val publisherConnector = playApplication.injector.instanceOf[PublisherConnector]
   }
 
   "fetchRaml" should {
@@ -46,7 +46,7 @@ class TapiPublisherConnectorSpec extends UnitSpec with BeforeAndAfterAll with Be
         .withStatus(Status.OK)
         .withBody(ramlContent)))
 
-      val result = await(tapiPublisherConnector.fetchRaml("aContext", "aVersion"))
+      val result = await(publisherConnector.fetchRaml("aContext", "aVersion"))
 
       result shouldBe Some(ramlContent)
     }
@@ -57,7 +57,7 @@ class TapiPublisherConnectorSpec extends UnitSpec with BeforeAndAfterAll with Be
         .withQueryParam("version", equalTo("aVersion")).willReturn(aResponse()
         .withStatus(Status.NOT_FOUND)))
 
-      val result = await(tapiPublisherConnector.fetchRaml("aContext", "aVersion"))
+      val result = await(publisherConnector.fetchRaml("aContext", "aVersion"))
 
       result shouldBe None
     }

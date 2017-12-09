@@ -15,7 +15,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class ApplicationConnector @Inject()(appConfig: AppConfig, wsClient: WSClient) {
 
-  val serviceUrl = appConfig.serviceUrl("application")
+  val serviceUrl = appConfig.serviceUrl("scapig-application")
 
   def fetchByCollaboratorEmail(emailAddress: String): Future[Seq[Application]] = {
     wsClient.url(s"$serviceUrl/applications?collaboratorEmail=$emailAddress").get() map {

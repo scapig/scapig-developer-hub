@@ -1,4 +1,4 @@
 #!/bin/sh
-SCRIPT=$(find . -type f -name tapi-developer-hub)
-rm -f tapi-developer-hub*/RUNNING_PID
+SCRIPT=$(find . -type f -name scapig-developer-hub)
+rm -f scapig-developer-hub*/RUNNING_PID
 exec $SCRIPT -Dhttp.port=8010

@@ -18,8 +18,8 @@ class DeveloperConnectorSpec extends UnitSpec with BeforeAndAfterAll with Before
   val port = 7001
 
   val playApplication = new GuiceApplicationBuilder()
-    .configure("services.tapi-developer.host" -> "localhost")
-    .configure("services.tapi-developer.port" -> "7001")
+    .configure("services.scapig-developer.host" -> "localhost")
+    .configure("services.scapig-developer.port" -> "7001")
     .build()
   val wireMockServer = new WireMockServer(wireMockConfig().port(port))
 

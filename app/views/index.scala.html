@@ -6,6 +6,57 @@
         <a href="/applications/add">Add an Application</a>
         <a href="/applications">Manage Applications</a>
         <a href="/apis">API Documentation</a>
+        <p>Scapig is an Open Source API Gateway with an integrated Developer Hub.</p>
+        <p>Third party developers can integrate with your APIs by registering an application and subscribing
+            to APIs.
+            Features provided by the Scapig platform include:
+            <ul>
+                <li>Oauth 2.0 Integration</li>
+                <li>Rate limiting</li>
+                <li>Scalable</li>
+                <li>Pluggable</li>
+                <li>Open Source</li>
+                <li>Active/Active architecture</li>
+            </ul>
+            <h3>Oauth 2.0 Integration</h3>
+            <p>
+                Scapig complies with the <a href="https://tools.ietf.org/html/rfc6749">Oauth 2.0 RFC specifications</a>.
+                The authorization_code flow has been implemented and the other flows are to follow soon
+            </p>
+
+            <h3>Rate Limiting</h3>
+            <p>
+                You can rate limit applications accessing your APIs with the following configurable tiers:
+                <ul>
+                    <li>Gold</li>
+                    <li>Silver</li>
+                    <li>Bronze</li>
+                </ul>
+            </p>
+
+            <h3>Scalable</h3>
+            <p>
+                Scapig has a microservice architecture.
+                This allows you to selectively increase the capacity of the platform which is in more strain.
+                As an example, you will need more instances of scapig-gateways or scapig-delegated-authority which are called on
+                every request than on scapig-developer-hub which is hosting the developer hub.
+            </p>
+
+            <h3>Pluggable</h3>
+            <p>
+                Scapig is based on a series of microservices communicating through REST HTTP requests.
+                It is fairly easy to replace one of its component by a bespoke component providing the REST contract is respected.
+                As an example, the default scapig-developer-hub could be replaced by a frontend with a branded UI.
+            </p>
+
+            <h3>Open Source</h3>
+            <p>Scapig is Open Source in Github</p>
+
+            <h3>Active/Active Architecture</h3>
+            <p>Scapig data is stored in <a href="https://docs.mongodb.com/">MongoDB</a> which has great support on replication
+                over multiple datacenters.
+            </p>
+        </p>
     </div>
 }
 

@@ -57,7 +57,6 @@ class ApiDefinitionConnectorSpec extends UnitSpec with BeforeAndAfterAll with Be
     "return the API" in new Setup {
       stubFor(get(urlPathEqualTo("/api-definition"))
         .withQueryParam("context", equalTo("aContext"))
-        .withQueryParam("version", equalTo("v1"))
         .willReturn(aResponse()
         .withStatus(Status.OK)
         .withBody(Json.toJson(api).toString())))
@@ -69,7 +68,7 @@ class ApiDefinitionConnectorSpec extends UnitSpec with BeforeAndAfterAll with Be
 
     "fail with APINotFoundException when the API does not exist" in new Setup {
       stubFor(get(urlPathEqualTo("/api-definition"))
-        .withQueryParam("context", equalTo("aContext")).withQueryParam("version", equalTo("v1"))
+        .withQueryParam("context", equalTo("aContext"))
         .willReturn(aResponse()
           .withStatus(Status.NOT_FOUND)))
 

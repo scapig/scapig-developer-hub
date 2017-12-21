@@ -1,6 +1,9 @@
 @(apis: Seq[APIDefinition], loggedInUser: Option[Developer])(implicit request: play.api.mvc.Request[Any], messages: Messages)
 
 @body = {
+    @if(apis.isEmpty) {
+        <p>There is no API published.</p>
+    }
     <ul>
         @for(api <- apis) {
             <li class="border__top-bottom">

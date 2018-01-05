@@ -3,29 +3,43 @@
 @(apis: Seq[APIDefinition], loggedInUser: Option[Developer])(implicit request: play.api.mvc.Request[Any], messages: Messages, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
 
 @body = {
-    @if(apis.isEmpty) {
-        <p>There is no API published.</p>
-    }
-    <ul>
-        @for(api <- apis) {
-            <li class="border__top-bottom">
-                <div class="accordion__row greybg">
-                    <div class="accordion__row__left">
-                            <a class="bold accordion__button link--no-underline" href="/apis/@api.encodedContext">@api.name</a>
-                        <div>
-                            <span>Version</span>
-                            @for(version <- api.versions) {
-                                @version.version (@version.status)
-                            }
-                        </div>
-                    </div>
-                    <div class="accordion__row__right">
-                        <p>@api.description</p>
-                    </div>
+    <section>
+        <div class="container text-center" style="padding-top: 20px;">
+            <h1 class="s-header"><strong>APIs</strong></h1>
+        </div>
+    </section>
+    <section>
+        <div class="container landing">
+            <div class="panel panel-default">
+                <div class="panel-body">
+
+                    @if(apis.isEmpty) {
+                        <p>There is no API published.</p>
+                    }
+                    <ul>
+                        @for(api <- apis) {
+                            <li class="border__top-bottom">
+                                <div class="accordion__row greybg">
+                                    <div class="accordion__row__left">
+                                            <a class="bold accordion__button link--no-underline" href="/apis/@api.encodedContext">@api.name</a>
+                                        <div>
+                                            <span>Version</span>
+                                            @for(version <- api.versions) {
+                                                @version.version (@version.status)
+                                            }
+                                        </div>
+                                    </div>
+                                    <div class="accordion__row__right">
+                                        <p>@api.description</p>
+                                    </div>
+                                </div>
+                            </li>
+                        }
+                    </ul>
                 </div>
-            </li>
-        }
-    </ul>
+            </div>
+        </div>
+    </section>
 }
 
 @include.template("API Documentation", loggedInUser, body)

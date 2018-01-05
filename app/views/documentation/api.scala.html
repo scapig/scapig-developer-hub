@@ -4,102 +4,116 @@
 @(api: APIDefinition, raml: RAML, loggedInUser: Option[Developer])(implicit request: play.api.mvc.Request[Any], messages: Messages, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
 
 @body = {
-    <div class="form-field" align="right">
-        <select id="version" name="version" class="form-control" onchange="location = '/apis/calendar?version=' + this.options[this.selectedIndex].value;">
-            @for(version <- api.versions) {
-                <option @if(version.version == raml.version().value()) {selected} value="@{version.version}">@version.version (@version.status)</option>
-            }
-        </select>
-    </div>
+    <section>
+        <div class="container text-center" style="padding-top: 20px;">
+            <h1 class="s-header"><strong>API</strong></h1>
+        </div>
+    </section>
+    <section>
+        <div class="container landing">
+            <div class="panel panel-default">
+                <div class="panel-body">
 
-    <div>
-        @for(doc <- raml.documentation){
-            <div>
-                <h2>@doc.title.value()</h2>
-                <div>@doc.content.value()</div>
-            </div>
-        }
-    </div>
-    <div>
-        @for(resource <- ResourceUtils.resources(raml.resources.toSeq)) {
-            <div>
-                @for(method <- resource.methods()) {
-                    <div>
-                        <h2>@method.method().toUpperCase() @resource.resourcePath() (@method.displayName().value())</h2>
-                        <div class="endpoint_group">
-                            <span>@method.description().value()</span>
-                            <div>
-                                <h3>Request Headers</h3>
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>Value</th>
-                                            <th>Description</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @for(header <- method.headers()) {
-                                            <tr>
-                                                <td>@header.displayName().value() <div class="parameter-required">@if(header.required()){required}</div></td>
-                                                <td>@header.example().value()</td>
-                                                <td>@header.description().value()</td>
-                                            </tr>
-                                        }
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div>
-                                <h3>Authorisation</h3>
-                                <div>
-                                    @{
-                                        Authorisation(method) match {
-                                            case Authorisation(AuthType.NONE, _) => "This resource is open access - no Authorization header is required."
-                                            case Authorisation(AuthType.APPLICATION, _) => "It requires an Authorization header containing a server_token."
-                                            case Authorisation(AuthType.USER, Some(scope)) => s"It requires an Authorization header containing an OAuth 2.0 Bearer Token with the $scope scope."
-                                        }
-                                    }
-                                </div>
-                            </div>
-                            @for(response <- method.responses()) {
-                                <div>
-                                    <h3>Response</h3>
-                                    <div class="accordion__body__row">
-                                        <div class="accordion__body__row__left smallWidth">
-                                            <b>Status:</b>
-                                        </div>
-                                        <div class="accordion__body__row__right"><code class="code--slim">@response.code().value()</code></div>
-                                    </div>
-                                    <div class="accordion__body__row">
-                                        <div class="accordion__body__row__left smallWidth">
-                                            <b>Body:</b>
-                                        </div>
-                                        <div class="accordion__body__row__right">
-                                        @for(body <- response.body) {
-                                            <section><pre class="code--block">@body.example().value()</pre></section>
-                                        }
-                                        </div>
-                                    </div>
-                                    @if(!response.headers().isEmpty) {
-                                        <div class="accordion__body__row">
-                                            <div class="accordion__body__row__left smallWidth">
-                                                <b>Headers:</b>
-                                            </div>
-                                            <div class="accordion__body__row__right">
-                                                @for(header <- response.headers()) {
-                                                    <section><pre class="code--block">@header.example().value()</pre></section>
-                                                }
-                                            </div>
-                                        </div>
-                                    }
-                                </div>
+                    <div class="form-field" align="right">
+                        <select id="version" name="version" class="form-control" onchange="location = '/apis/calendar?version=' + this.options[this.selectedIndex].value;">
+                            @for(version <- api.versions) {
+                                <option @if(version.version == raml.version().value()) {selected} value="@{version.version}">@version.version (@version.status)</option>
                             }
-                        </div>
+                        </select>
                     </div>
-                }
+
+                    <div>
+                        @for(doc <- raml.documentation){
+                            <div>
+                                <h2>@doc.title.value()</h2>
+                                <div>@doc.content.value()</div>
+                            </div>
+                        }
+                    </div>
+                    <div>
+                        @for(resource <- ResourceUtils.resources(raml.resources.toSeq)) {
+                            <div>
+                                @for(method <- resource.methods()) {
+                                    <div>
+                                        <h2>@method.method().toUpperCase() @resource.resourcePath() (@method.displayName().value())</h2>
+                                        <div class="endpoint_group">
+                                            <span>@method.description().value()</span>
+                                            <div>
+                                                <h3>Request Headers</h3>
+                                                <table>
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Name</th>
+                                                            <th>Value</th>
+                                                            <th>Description</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @for(header <- method.headers()) {
+                                                            <tr>
+                                                                <td>@header.displayName().value() <div class="parameter-required">@if(header.required()){required}</div></td>
+                                                                <td>@header.example().value()</td>
+                                                                <td>@header.description().value()</td>
+                                                            </tr>
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div>
+                                                <h3>Authorisation</h3>
+                                                <div>
+                                                    @{
+                                                        Authorisation(method) match {
+                                                            case Authorisation(AuthType.NONE, _) => "This resource is open access - no Authorization header is required."
+                                                            case Authorisation(AuthType.APPLICATION, _) => "It requires an Authorization header containing a server_token."
+                                                            case Authorisation(AuthType.USER, Some(scope)) => s"It requires an Authorization header containing an OAuth 2.0 Bearer Token with the $scope scope."
+                                                        }
+                                                    }
+                                                </div>
+                                            </div>
+                                            @for(response <- method.responses()) {
+                                                <div>
+                                                    <h3>Response</h3>
+                                                    <div class="accordion__body__row">
+                                                        <div class="accordion__body__row__left smallWidth">
+                                                            <b>Status:</b>
+                                                        </div>
+                                                        <div class="accordion__body__row__right"><code class="code--slim">@response.code().value()</code></div>
+                                                    </div>
+                                                    <div class="accordion__body__row">
+                                                        <div class="accordion__body__row__left smallWidth">
+                                                            <b>Body:</b>
+                                                        </div>
+                                                        <div class="accordion__body__row__right">
+                                                        @for(body <- response.body) {
+                                                            <section><pre class="code--block">@body.example().value()</pre></section>
+                                                        }
+                                                        </div>
+                                                    </div>
+                                                    @if(!response.headers().isEmpty) {
+                                                        <div class="accordion__body__row">
+                                                            <div class="accordion__body__row__left smallWidth">
+                                                                <b>Headers:</b>
+                                                            </div>
+                                                            <div class="accordion__body__row__right">
+                                                                @for(header <- response.headers()) {
+                                                                    <section><pre class="code--block">@header.example().value()</pre></section>
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
             </div>
-        }
-    </div>
+        </div>
+    </section>
 }
 
 @include.template(raml.title.value(), loggedInUser, body)

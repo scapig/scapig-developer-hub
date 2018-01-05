@@ -4,69 +4,91 @@
 @(loggedInUser: Developer, applicationView: ApplicationViewData, saved: Option[Boolean] = None)(implicit request: play.api.mvc.Request[Any], webJarsUtil: WebJarsUtil, assets: AssetsFinder)
 
 @body = {
-    <ul class="tabs-nav">
-        <li aria-selected="false" role="tab" class="tab" aria-controls="subscriptions" tabindex="0"><a href="/applications/@applicationView.app.id">Application Details</a></li>
-        <li aria-selected="false" role="tab" class="tab" aria-controls="subscriptions" tabindex="1"><span class="tabs-nav__tab--active">Subscriptions</span></li>
-        <li aria-selected="false" role="tab" class="tab" aria-controls="subscriptions" tabindex="2"><a class="tabs-nav__tab" href="/applications/@applicationView.app.id?tab=SANDBOX_CREDENTIALS_TAB">Sandbox Credentials</a></li>
-        <li aria-selected="false" role="tab" class="tab" aria-controls="subscriptions" tabindex="3"><a class="tabs-nav__tab" href="/applications/@applicationView.app.id?tab=PRODUCTION_CREDENTIALS_TAB">Production Credentials</a></li>
-    </ul>
+    <section>
+        <div class="container text-center" style="padding-top: 20px;">
+            <h1 class="s-header"><strong>Application</strong></h1>
+        </div>
+    </section>
+    <section>
+        <div class="container landing">
+            <div class="panel panel-default">
+                <div class="panel-body">
 
-    @if(saved.getOrElse(false)) {
-        <p></p>
-        <p class="alert alert--success">Your changes have been saved</p>
-    }
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/applications/@applicationView.app.id">Application Details</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#">Subscriptions</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/applications/@applicationView.app.id?tab=SANDBOX_CREDENTIALS_TAB">Sandbox Credentials</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/applications/@applicationView.app.id?tab=PRODUCTION_CREDENTIALS_TAB">Production Credentials</a>
+                        </li>
+                    </ul>
 
-    <p>
-        You have to subscribe to an API so your application can access it.
-        You’ll also receive notifications about that API’s lifecycle events, such as new versions
-        being introduced and old versions being retired.
-    </p>
+                    @if(saved.getOrElse(false)) {
+                        <p></p>
+                        <p class="alert alert--success">Your changes have been saved</p>
+                    }
 
-    @applicationView.subscriptions.map { subscription =>
+                    <p>
+                        You have to subscribe to an API so your application can access it.
+                        You’ll also receive notifications about that API’s lifecycle events, such as new versions
+                        being introduced and old versions being retired.
+                    </p>
 
-        <div>
-            <ul>
-                <li class="accordion">
-                    <div class="accordion__row">
-                        <div class="accordion__row__left">@subscription.apiName</div>
-                        <div class="accordion__row__right"></div>
-                    </div>
-                    @subscription.versions.map { version =>
-                        <div class="accordion__body">
+                    @applicationView.subscriptions.map { subscription =>
+
+                        <div>
                             <ul>
-                                <li class="accordion__body__row">
-                                    <div class="accordion__body__row__left">@version.version.version (@version.version.status)</div>
-                                    <div class="accordion__body__row__right">
-                                        <div class="float--right">
-                                            <div class="toggle">
-                                            @if(version.subscribed) {
-                                                <span class="toggle__button--active inline">On</span>
-                                                <div class="inline">
-                                                    @helper.form(action = controllers.routes.ManageApplicationController.unsubscribe(applicationView.app.id.toString, subscription.context, version.version.version)) {
-                                                        @CSRF.formField
-                                                        <button type="submit" class="linkButton">Off</button>
-                                                    }
-                                                </div>
-                                            } else {
-                                                <div class="inline">
-                                                    @helper.form(action = controllers.routes.ManageApplicationController.subscribe(applicationView.app.id.toString, subscription.context, version.version.version)) {
-                                                        @CSRF.formField
-                                                        <button type="submit" class="linkButton">On</button>
-                                                    }
-                                                </div>
-                                                <span class="toggle__button--inactive inline">Off</span>
-                                            }
-                                            </div>
-                                        </div>
+                                <li class="accordion">
+                                    <div class="accordion__row">
+                                        <div class="accordion__row__left">@subscription.apiName</div>
+                                        <div class="accordion__row__right"></div>
                                     </div>
+                                    @subscription.versions.map { version =>
+                                        <div class="accordion__body">
+                                            <ul>
+                                                <li class="accordion__body__row">
+                                                    <div class="accordion__body__row__left">@version.version.version (@version.version.status)</div>
+                                                    <div class="accordion__body__row__right">
+                                                        <div class="float--right">
+                                                            <div class="toggle">
+                                                            @if(version.subscribed) {
+                                                                <span class="toggle__button--active inline">On</span>
+                                                                <div class="inline">
+                                                                    @helper.form(action = controllers.routes.ManageApplicationController.unsubscribe(applicationView.app.id.toString, subscription.context, version.version.version)) {
+                                                                        @CSRF.formField
+                                                                        <button type="submit" class="linkButton">Off</button>
+                                                                    }
+                                                                </div>
+                                                            } else {
+                                                                <div class="inline">
+                                                                    @helper.form(action = controllers.routes.ManageApplicationController.subscribe(applicationView.app.id.toString, subscription.context, version.version.version)) {
+                                                                        @CSRF.formField
+                                                                        <button type="submit" class="linkButton">On</button>
+                                                                    }
+                                                                </div>
+                                                                <span class="toggle__button--inactive inline">Off</span>
+                                                            }
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    }
                                 </li>
                             </ul>
                         </div>
                     }
-                </li>
-            </ul>
+                </div>
+            </div>
         </div>
-    }
+    </section>
 }
 
 @include.template("Application " + applicationView.app.name, Some(loggedInUser), body)

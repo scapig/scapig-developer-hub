@@ -4,32 +4,46 @@
 @(loggedInUser: Developer, applications: Seq[ApplicationSummary])(implicit request: play.api.mvc.Request[Any], webJarsUtil: WebJarsUtil, assets: AssetsFinder)
 
 @body = {
-    <a class="button" href="@{routes.ManageApplicationController.createApplicationForm()}">Add an application</a>
-    <table class="app">
-        <colgroup>
-            <col width="25%"/>
-            <col width="50%"/>
-            <col width="25%"/>
-        </colgroup>
-        <thead>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Role</th>
-        </thead>
+    <section>
+        <div class="container text-center" style="padding-top: 20px;">
+            <h1 class="s-header"><strong>Manage Applications</strong></h1>
+        </div>
+    </section>
+    <section>
+        <div class="container landing">
+            <div class="panel panel-default">
+                <div class="panel-body">
 
-        @for(app<-applications) {
-            <tr>
-                <td>
-                    <a href="@{routes.ManageApplicationController.editApplication(app.id, None, None)}">@app.name</a>
-                </td>
-                <td>@app.description</td>
-                <td>
-                    @if(app.role == Role.ADMINISTRATOR) {Admin}
-                    @if(app.role == Role.DEVELOPER) {Developer}
-                </td>
-            </tr>
-        }
-    </table>
+                    <a class="button" href="@{routes.ManageApplicationController.createApplicationForm()}">Add an application</a>
+                    <table class="app">
+                        <colgroup>
+                            <col width="25%"/>
+                            <col width="50%"/>
+                            <col width="25%"/>
+                        </colgroup>
+                        <thead>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Role</th>
+                        </thead>
+
+                        @for(app<-applications) {
+                            <tr>
+                                <td>
+                                    <a href="@{routes.ManageApplicationController.editApplication(app.id, None, None)}">@app.name</a>
+                                </td>
+                                <td>@app.description</td>
+                                <td>
+                                    @if(app.role == Role.ADMINISTRATOR) {Admin}
+                                    @if(app.role == Role.DEVELOPER) {Developer}
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
 }
 
 @include.template(s"Manage Applications", Some(loggedInUser), body)

@@ -3,17 +3,29 @@
 @(loggedInUser: Option[Developer])(implicit request: play.api.mvc.Request[Any], messages: Messages, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
 
 @body = {
-    <div>
-        API Platform example
-        <a href="/applications/add">Add an Application</a>
-        <a href="/applications">Manage Applications</a>
-        <a href="/apis">API Documentation</a>
-            <p>Welcome! Here's where you'll find an example of Developer Hub for the <a href="/">SCAPIG API Gateway</a>.<b/>
+    <section>
+        <div class="container text-center" style="padding-top: 20px;">
+            <h1 class="s-header"><strong>SCAPIG - DEVELOPER HUB</strong></h1>
+        </div>
+    </section>
+    <section>
+        <div class="container landing">
+            <div class="panel panel-default">
+                <div class="panel-body">
 
-                You can create a free account to try it out.
-            </p>
-        </p>
-    </div>
+                    API Platform example
+                    <a href="/applications/add">Add an Application</a>
+                    <a href="/applications">Manage Applications</a>
+                    <a href="/apis">API Documentation</a>
+                        <p>Welcome! Here's where you'll find an example of Developer Hub for the <a href="/">SCAPIG API Gateway</a>.<b/>
+
+                            You can create a free account to try it out.
+                        </p>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
 }
 
 @include.template("Scapig Developer Hub", None, body)

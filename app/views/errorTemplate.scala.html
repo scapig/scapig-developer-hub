@@ -3,8 +3,21 @@
 @(title: String, loggedInUser: Option[Developer], message: String)(implicit webJarsUtil: WebJarsUtil, assets: AssetsFinder)
 
 @body = {
-    <h1>@title</h1>
-    <div>@message</div>
+    <section>
+        <div class="container text-center" style="padding-top: 20px;">
+            <h1 class="s-header"><strong>ERROR</strong></h1>
+        </div>
+    </section>
+    <section>
+        <div class="container landing">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <h1>@title</h1>
+                    <div>@message</div>
+                </div>
+            </div>
+        </div>
+    </section>
 }
 
 @include.template(title, loggedInUser, body)

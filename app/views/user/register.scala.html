@@ -4,46 +4,60 @@
 @(form: Form[controllers.RegisterForm])(implicit request: play.api.mvc.Request[Any], messages: Messages, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
 
 @body = {
-    <div>
-    @helper.form(action = controllers.routes.ProfileController.registerAction) {
-        @CSRF.formField
-
-        @if(form.hasErrors) {
-            @for(error <- form.errors) {
-                <p class="error-notification">@Messages(error.message)</p>
-            }
-        }
-
-        <div class="form-field-group">
-            <div class="form-field">
-                <label for="email" class="label--full-length"><strong>Email</strong></label>
-                <input type="text" id="email" name="email" value="@form.data.get("email")" maxLength="50"/>
-            </div>
-
-            <div class="form-field">
-                <label for="firstName" class="label--full-length"><strong>First name</strong></label>
-                <input type="text" id="firstName" name="firstName" value="@form.data.get("firstName")" maxLength="50"/>
-            </div>
-
-            <div class="form-field">
-                <label for="lastName" class="label--full-length"><strong>Last name</strong></label>
-                <input type="text" id="lastName" name="lastName" value="@form.data.get("lastName")" maxLength="50"/>
-            </div>
-
-            <div class="form-field">
-                <label for="password" class="label--full-length"><strong>Password</strong></label>
-                <input type="password" id="password" name="password" value="@form.data.get("password")" maxLength="50"/>
-            </div>
-
-            <div class="form-field">
-                <label for="confirmPassword" class="label--full-length"><strong>Confirm Password</strong></label>
-                <input type="password" id="confirmPassword" name="confirmPassword" value="@form.data.get("confirmPassword")" maxLength="50"/>
-            </div>
-
-            <button class="button" id="add" type="submit" role="button">Register</button>
+    <section>
+        <div class="container text-center" style="padding-top: 20px;">
+            <h1 class="s-header"><strong>REGISTER</strong></h1>
         </div>
-    }
-    </div>
+    </section>
+    <section>
+        <div class="container landing">
+            <div class="panel panel-default">
+                <div class="panel-body">
+
+                    @helper.form(action = controllers.routes.ProfileController.registerAction) {
+                        @CSRF.formField
+
+                        @if(form.hasErrors) {
+                            <div class="alert alert-danger" role="alert">
+                            @for(error <- form.errors) {
+                                @Messages(error.message)<br/>
+                            }
+                            </div>
+                        }
+
+                        <div class="form-group">
+                            <label for="email"><strong>Email</strong></label>
+                            <input type="text" class="form-control"  id="email" name="email" value="@form.data.get("email")" maxLength="50"/>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="firstName"><strong>First name</strong></label>
+                            <input type="text" class="form-control" id="firstName" name="firstName" value="@form.data.get("firstName")" maxLength="50"/>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="lastName"><strong>Last name</strong></label>
+                            <input type="text" class="form-control"  id="lastName" name="lastName" value="@form.data.get("lastName")" maxLength="50"/>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password"><strong>Password</strong></label>
+                            <input type="password" class="form-control" id="password" name="password" value="@form.data.get("password")" maxLength="50"/>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="confirmPassword"><strong>Confirm Password</strong></label>
+                            <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" value="@form.data.get("confirmPassword")" maxLength="50"/>
+                        </div>
+
+                        <div>
+                            <button class="btn btn-primary" id="save" type="submit" role="button">Register</button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
 }
 
 @include.template("Register", None, body)

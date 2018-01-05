@@ -3,39 +3,51 @@
 @(heading: String, form: Form[controllers.LoginForm], registered: Option[Boolean] = None)(implicit request: play.api.mvc.Request[Any], messages: Messages, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
 
 @body = {
-    <div>
-        @helper.form(action = controllers.routes.LoginController.login) {
-            @helper.CSRF.formField
-            @if(form.hasErrors) {
-                @for(error <- form.errors) {
-                    <p class="error-notification">@Messages(error.message)</p>
-                }
-            }
+    <section>
+        <div class="container text-center" style="padding-top: 20px;">
+            <h1 class="s-header"><strong>Login</strong></h1>
+        </div>
+    </section>
+    <section>
+        <div class="container landing">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    @helper.form(action = controllers.routes.LoginController.login) {
+                        @helper.CSRF.formField
+                        @if(form.hasErrors) {
+                            <div class="alert alert-danger" role="alert">
+                            @for(error <- form.errors) {
+                                @Messages(error.message)<br/>
+                            }
+                            </div>
+                        }
 
-            @if(registered.getOrElse(false)) {
-                <p class="alert alert--success">You have successfully registered.</p>
-            }
+                        @if(registered.getOrElse(false)) {
+                            <div class="alert alert-success" role="alert">You have successfully registered.</div>
+                        }
 
-            <div class="form-field-group">
-                <div class="form-field">
-                    <label for="emailaddress" class="label--full-length"><strong>Email address</strong></label>
-                    <input type="text" id="emailaddress" name="emailaddress"
-                    value="@form.data.getOrElse("emailaddress", "")"
-                    aria-required="true"/>
-                </div>
-                <div class="form-field">
-                    <label for="password" class="label--full-length"><strong>Password</strong></label>
-                    <input type="password" id="password"
-                    name="password"
-                    aria-hidden="true"
-                    aria-required="true"/>
+                        <div class="form-group">
+                            <label for="emailaddress"><strong>Email address</strong></label>
+                            <input type="text" class="form-control" id="emailaddress" name="emailaddress"
+                            value="@form.data.getOrElse("emailaddress", "")"
+                            aria-required="true"/>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password"><strong>Password</strong></label>
+                            <input type="password" class="form-control" id="password"
+                            name="password"
+                            aria-hidden="true"
+                            aria-required="true"/>
+                        </div>
+                        <div>
+                            <button id="submit" class="btn btn-primary" type="submit">Sign in</button>
+                        </div>
+                    }
                 </div>
             </div>
-            <div>
-                <button id="submit" class="button" type="submit">Sign in</button>
-            </div>
-        }
-    </div>
+        </div>
+    </section>
 }
 
 @include.template("Login", None, body)

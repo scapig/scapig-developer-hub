@@ -4,32 +4,45 @@
 @(loggedInUser: Developer, form: Form[controllers.AddApplicationForm])(implicit request: play.api.mvc.Request[Any], messages: Messages, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
 
 @body = {
-    <div>
-    @helper.form(action = controllers.routes.ManageApplicationController.createApplicationAction) {
-        @CSRF.formField
-
-        @if(form.hasErrors) {
-            @for(error <- form.errors) {
-                <p class="error-notification">@Messages(error.message)</p>
-            }
-        }
-
-        <div class="form-field-group">
-            <div class="form-field">
-                <label for="applicationName" class="label--full-length"><strong>Application name</strong></label>
-                <input type="text" id="applicationName" name="applicationName" value="@form.data.get("applicationName")" maxLength="50"/>
-            </div>
-
-            <div class="form-field">
-                <label for="description" class="label--full-length"><strong>Description</strong> (optional)</label>
-                <textarea id="description" name="description" maxLength="250">@form.data.get("description")</textarea>
-            </div>
-
-            <button class="button" id="add" type="submit" role="button">Add</button>
-            <a href="@routes.ManageApplicationController.manageApps" >Cancel</a>
+    <section>
+        <div class="container text-center" style="padding-top: 20px;">
+            <h1 class="s-header"><strong>ADD APPLICATION</strong></h1>
         </div>
-    }
-    </div>
+    </section>
+    <section>
+        <div class="container landing">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    @helper.form(action = controllers.routes.ManageApplicationController.createApplicationAction) {
+                        @CSRF.formField
+
+                        @if(form.hasErrors) {
+                            <div class="alert alert-danger" role="alert">
+                            @for(error <- form.errors) {
+                                @Messages(error.message)<br/>
+                            }
+                            </div>
+                        }
+
+                        <div class="form-group">
+                            <label for="applicationName"><strong>Application name</strong></label>
+                            <input type="text" class="form-control" id="applicationName" name="applicationName" value="@form.data.get("applicationName")" maxLength="50"/>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="description"><strong>Description</strong> (optional)</label>
+                            <textarea id="description" class="form-control" name="description" maxLength="250">@form.data.get("description")</textarea>
+                        </div>
+
+                        <div>
+                            <button class="btn btn-primary" id="save" type="submit" role="button">Register</button>
+                            <a href="@routes.ManageApplicationController.manageApps" >Cancel</a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
 }
 
 @include.template("Add an application", Some(loggedInUser), body)

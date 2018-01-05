@@ -4,37 +4,51 @@
 @(loggedInUser: Developer, form: Form[controllers.EditProfileForm], saved: Option[Boolean] = None)(implicit request: play.api.mvc.Request[Any], messages: Messages, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
 
 @body = {
-    <div>
-    @helper.form(action = controllers.routes.ProfileController.editProfileAction) {
-        @CSRF.formField
-
-        @if(form.hasErrors) {
-            @for(error <- form.errors) {
-                <p class="error-notification">@Messages(error.message)</p>
-            }
-        }
-
-        @if(saved.getOrElse(false)) {
-            <p class="alert alert--success">Your changes have been saved</p>
-        }
-
-        <a href="/profile/password">Change Password</a>
-
-        <div class="form-field-group">
-            <div class="form-field">
-                <label for="firstName" class="label--full-length"><strong>First name</strong></label>
-                <input type="text" id="firstName" name="firstName" value="@form.data.get("firstName")" maxLength="50"/>
-            </div>
-
-            <div class="form-field">
-                <label for="lastName" class="label--full-length"><strong>Last name</strong></label>
-                <input type="text" id="lastName" name="lastName" value="@form.data.get("lastName")" maxLength="50"/>
-            </div>
-
-            <button class="button" id="add" type="submit" role="button">Save</button>
+    <section>
+        <div class="container text-center" style="padding-top: 20px;">
+            <h1 class="s-header"><strong>PROFILE</strong></h1>
         </div>
-    }
-    </div>
+    </section>
+    <section>
+        <div class="container landing">
+            <div class="panel panel-default">
+                <div class="panel-body">
+
+                    @helper.form(action = controllers.routes.ProfileController.editProfileAction) {
+                        @CSRF.formField
+
+                        @if(form.hasErrors) {
+                            <div class="alert alert-danger" role="alert">
+                            @for(error <- form.errors) {
+                                @Messages(error.message)<br/>
+                            }
+                            </div>
+                        }
+
+                        @if(saved.getOrElse(false)) {
+                            <div class="alert alert-success" role="alert">Your changes have been saved.</div>
+                        }
+
+                        <a href="/profile/password">Change Password</a>
+
+                        <div class="form-group">
+                            <label for="firstName"><strong>First name</strong></label>
+                            <input type="text" class="form-control" id="firstName" name="firstName" value="@form.data.get("firstName")" maxLength="50"/>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="lastName"><strong>Last name</strong></label>
+                            <input type="text" class="form-control" id="lastName" name="lastName" value="@form.data.get("lastName")" maxLength="50"/>
+                        </div>
+
+                        <div>
+                            <button class="btn btn-primary" id="save" type="submit" role="button">Save</button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
 }
 
 @include.template("User Profile", Some(loggedInUser), body)

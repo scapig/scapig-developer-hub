@@ -1,0 +1,41 @@
+body {
+    padding-top: 50px;
+    font-size: 16px;
+    background: #f5f7f9;
+}
+
+
+.s-header {
+    font-size: 24px;
+    color: #777;
+    letter-spacing: 6px;
+    font-family: 'Rubik', sans-serif;
+    font-weight: 700;
+}
+
+.s-subheader {
+    color: #333;
+    font-family: 'Rubik', sans-serif;
+    font-size: 60px;
+    font-weight: 400;
+    font-style: normal;
+    line-height: 1.6;
+}
+
+.s-header-2 {
+    font-family: 'Rubik', sans-serif;
+    font-size: 4.25rem;
+    font-style: normal;
+    line-height: 1.2;
+}
+
+.s-header-text {
+    font-family: 'Rubik', sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    line-height: 1.6;
+}
+
+.landing {
+    font-size: 2rem;
+}

@@ -5,6 +5,7 @@ import javax.inject.{Inject, Singleton}
 import com.mohiva.play.silhouette.api.Silhouette
 import config.{DefaultEnv, WithApplication}
 import models._
+import org.webjars.play.WebJarsUtil
 import play.api.data.Form
 import play.api.data.Forms.{mapping, optional, seq, text}
 import play.api.i18n.I18nSupport
@@ -17,7 +18,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 @Singleton
 class ManageApplicationController  @Inject()(cc: ControllerComponents,
                                              applicationService: ApplicationService,
-                                             silhouette: Silhouette[DefaultEnv]) extends AbstractController(cc) with I18nSupport {
+                                             silhouette: Silhouette[DefaultEnv])(implicit webJarsUtil: WebJarsUtil, assets: AssetsFinder) extends AbstractController(cc) with I18nSupport {
 
   val APP_DETAILS_TAB = "APP_DETAILS_TAB"
   val APP_SUBSCRIPTIONS_TAB = "APP_SUBSCRIPTIONS_TAB"

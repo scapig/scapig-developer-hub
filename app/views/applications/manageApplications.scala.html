@@ -1,6 +1,7 @@
 @import models.ApplicationSummary
+@import org.webjars.play.WebJarsUtil
 
-@(loggedInUser: Developer, applications: Seq[ApplicationSummary])(implicit request: play.api.mvc.Request[Any])
+@(loggedInUser: Developer, applications: Seq[ApplicationSummary])(implicit request: play.api.mvc.Request[Any], webJarsUtil: WebJarsUtil, assets: AssetsFinder)
 
 @body = {
     <a class="button" href="@{routes.ManageApplicationController.createApplicationForm()}">Add an application</a>

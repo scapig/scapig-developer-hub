@@ -1,4 +1,6 @@
-@(apis: Seq[APIDefinition], loggedInUser: Option[Developer])(implicit request: play.api.mvc.Request[Any], messages: Messages)
+@import org.webjars.play.WebJarsUtil
+
+@(apis: Seq[APIDefinition], loggedInUser: Option[Developer])(implicit request: play.api.mvc.Request[Any], messages: Messages, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
 
 @body = {
     @if(apis.isEmpty) {

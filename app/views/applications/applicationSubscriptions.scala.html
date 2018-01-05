@@ -1,6 +1,7 @@
 @import helper._
+@import org.webjars.play.WebJarsUtil
 
-@(loggedInUser: Developer, applicationView: ApplicationViewData, saved: Option[Boolean] = None)(implicit request: play.api.mvc.Request[Any])
+@(loggedInUser: Developer, applicationView: ApplicationViewData, saved: Option[Boolean] = None)(implicit request: play.api.mvc.Request[Any], webJarsUtil: WebJarsUtil, assets: AssetsFinder)
 
 @body = {
     <ul class="tabs-nav">

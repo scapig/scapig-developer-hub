@@ -1,5 +1,7 @@
 @import services.RAML
-@(api: APIDefinition, raml: RAML, loggedInUser: Option[Developer])(implicit request: play.api.mvc.Request[Any], messages: Messages)
+@import org.webjars.play.WebJarsUtil
+
+@(api: APIDefinition, raml: RAML, loggedInUser: Option[Developer])(implicit request: play.api.mvc.Request[Any], messages: Messages, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
 
 @body = {
     <div class="form-field" align="right">

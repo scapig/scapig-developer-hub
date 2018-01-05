@@ -1,6 +1,7 @@
 @import helper._
+@import org.webjars.play.WebJarsUtil
 
-@(form: Form[controllers.RegisterForm])(implicit request: play.api.mvc.Request[Any], messages: Messages)
+@(form: Form[controllers.RegisterForm])(implicit request: play.api.mvc.Request[Any], messages: Messages, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
 
 @body = {
     <div>

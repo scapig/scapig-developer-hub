@@ -5,6 +5,7 @@ import javax.inject.{Inject, Singleton}
 import com.mohiva.play.silhouette.api.Silhouette
 import config.DefaultEnv
 import models.ApiNotFoundException
+import org.webjars.play.WebJarsUtil
 import play.api.i18n.I18nSupport
 import play.api.mvc.{AbstractController, ControllerComponents}
 import services.{ApiDefinitionService, RamlService, SessionService}
@@ -17,7 +18,7 @@ class ApiDocumentationController @Inject()(cc: ControllerComponents,
                                            apiDefinitionService: ApiDefinitionService,
                                            sessionService: SessionService,
                                            ramlService: RamlService,
-                                           silhouette: Silhouette[DefaultEnv]) extends AbstractController(cc) with I18nSupport {
+                                           silhouette: Silhouette[DefaultEnv])(implicit webJarsUtil: WebJarsUtil, assets: AssetsFinder) extends AbstractController(cc) with I18nSupport {
 
   def listApis() = silhouette.UserAwareAction.async { implicit request =>
     for {

@@ -1,7 +1,8 @@
 @import helper._
 @import models.Application
+@import org.webjars.play.WebJarsUtil
 
-@(loggedInUser: Developer, applicationView: ApplicationViewData, form: Form[controllers.EditApplicationForm], saved: Option[Boolean] = None)(implicit request: play.api.mvc.Request[Any], messages: Messages)
+@(loggedInUser: Developer, applicationView: ApplicationViewData, form: Form[controllers.EditApplicationForm], saved: Option[Boolean] = None)(implicit request: play.api.mvc.Request[Any], messages: Messages, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
 
 @body = {
     <div>

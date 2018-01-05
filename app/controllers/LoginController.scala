@@ -7,6 +7,7 @@ import com.mohiva.play.silhouette.api.{LoginEvent, LoginInfo, Silhouette}
 import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
 import config.{AppConfig, DefaultEnv}
 import models.{InvalidCredentialsException, UserProfileEditRequest}
+import org.webjars.play.WebJarsUtil
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
@@ -20,7 +21,7 @@ import play.api.i18n.Messages.Implicits._
 class LoginController @Inject()(cc: ControllerComponents,
                                 appConfig: AppConfig,
                                 sessionService: SessionService,
-                                silhouette: Silhouette[DefaultEnv]) extends AbstractController(cc) with I18nSupport {
+                                silhouette: Silhouette[DefaultEnv])(implicit webJarsUtil: WebJarsUtil, assets: AssetsFinder) extends AbstractController(cc) with I18nSupport {
   val loginForm: Form[LoginForm] = LoginForm.form
 
   def showLoginPage(registered: Option[Boolean] = None) = silhouette.UnsecuredAction.async { implicit request =>

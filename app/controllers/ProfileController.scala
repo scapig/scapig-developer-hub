@@ -6,6 +6,7 @@ import com.mohiva.play.silhouette.api.Silhouette
 import config.DefaultEnv
 import controllers.FormKeys.{emailAlreadyRegisteredKey, passwordInvalidKey, passwordNoMatchKey}
 import models._
+import org.webjars.play.WebJarsUtil
 import play.api.data.Form
 import play.api.data.Forms.{mapping, text}
 import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
@@ -19,7 +20,7 @@ import scala.concurrent.Future
 @Singleton
 class ProfileController  @Inject()(cc: ControllerComponents,
                                    sessionService: SessionService,
-                                   silhouette: Silhouette[DefaultEnv]) extends AbstractController(cc) with I18nSupport {
+                                   silhouette: Silhouette[DefaultEnv])(implicit webJarsUtil: WebJarsUtil, assets: AssetsFinder) extends AbstractController(cc) with I18nSupport {
 
   def showProfileForm(saved: Option[Boolean] = None) = silhouette.SecuredAction.async { implicit request =>
     sessionService.fetchDeveloper(request.identity.email) map { developer =>

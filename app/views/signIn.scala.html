@@ -1,4 +1,6 @@
-@(heading: String, form: Form[controllers.LoginForm], registered: Option[Boolean] = None)(implicit request: play.api.mvc.Request[Any], messages: Messages)
+@import org.webjars.play.WebJarsUtil
+
+@(heading: String, form: Form[controllers.LoginForm], registered: Option[Boolean] = None)(implicit request: play.api.mvc.Request[Any], messages: Messages, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
 
 @body = {
     <div>

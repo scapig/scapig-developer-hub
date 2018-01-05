@@ -1,4 +1,6 @@
-@(title: String, loggedInUser: Option[Developer], message: String)
+@import org.webjars.play.WebJarsUtil
+
+@(title: String, loggedInUser: Option[Developer], message: String)(implicit webJarsUtil: WebJarsUtil, assets: AssetsFinder)
 
 @body = {
     <h1>@title</h1>

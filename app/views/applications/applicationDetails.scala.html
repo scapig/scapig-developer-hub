@@ -7,70 +7,74 @@
 @body = {
     <section>
         <div class="container text-center" style="padding-top: 20px;">
-            <h1 class="s-header"><strong>Application</strong></h1>
+            <h1 class="s-header"><strong>Application - @{applicationView.app.name}</strong></h1>
         </div>
     </section>
     <section>
         <div class="container landing">
             <div class="panel panel-default">
                 <div class="panel-body">
-
-                    <ul class="nav nav-tabs">
-                        <li class="nav-item">
-                            <a class="nav-link active" href="#">Application Details</a>
+                    <ul class="nav nav-pills nav-justified">
+                        <li class="active">
+                            <a href="/applications/@applicationView.app.id">Application Details</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/applications/@applicationView.app.id?tab=APP_SUBSCRIPTIONS_TAB">Subscriptions</a>
+                        <li>
+                            <a href="/applications/@applicationView.app.id?tab=APP_SUBSCRIPTIONS_TAB">Subscriptions</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/applications/@applicationView.app.id?tab=SANDBOX_CREDENTIALS_TAB">Sandbox Credentials</a>
+                        <li>
+                            <a href="/applications/@applicationView.app.id?tab=SANDBOX_CREDENTIALS_TAB">Sandbox Credentials</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/applications/@applicationView.app.id?tab=PRODUCTION_CREDENTIALS_TAB">Production Credentials</a>
+                        <li>
+                            <a href="/applications/@applicationView.app.id?tab=PRODUCTION_CREDENTIALS_TAB">Production Credentials</a>
                         </li>
                     </ul>
+
+
                     @helper.form(action = controllers.routes.ManageApplicationController.updateApplicationAction(applicationView.app.id.toString)) {
                         @CSRF.formField
 
                         @if(form.hasErrors) {
+                            <div class="alert alert-danger" role="alert">
                             @for(error <- form.errors) {
-                                <p class="error-notification">@Messages(error.message)</p>
+                                @Messages(error.message)<br/>
                             }
+                            </div>
                         }
 
                         @if(saved.getOrElse(false)) {
-                            <p class="alert alert--success">Your changes have been saved</p>
+                            <div class="alert alert-success" role="alert">Your changes have been saved.</div>
                         }
+                        <br/><br/>
 
-                        <div class="form-field-group">
-                            <div class="form-field">
-                                <label for="applicationName" class="label--full-length"><strong>Application name</strong></label>
-                                <input type="text" id="applicationName" name="applicationName" value="@form.data.get("applicationName")" maxLength="50"/>
-                            </div>
-
-                            <div class="form-field">
-                                <label for="description" class="label--full-length"><strong>Description</strong> (optional)</label>
-                                <textarea id="description" name="description" maxLength="250">@form.data.get("description")</textarea>
-                            </div>
-
-                            <div class="form-field">
-                                <label for="redirectUris" class="label--full-length"><strong>Redirect Uris</strong></label>
-                                <input type="text" id="redirectUris[0]" name="redirectUris[]" value="@form.data.get("redirectUris[0]")" maxLength="50"/><br/>
-                                <input type="text" id="redirectUris[1]" name="redirectUris[]" value="@form.data.get("redirectUris[1]")" maxLength="50"/><br/>
-                                <input type="text" id="redirectUris[2]" name="redirectUris[]" value="@form.data.get("redirectUris[2]")" maxLength="50"/>
-                            </div>
-
-                            <div class="form-field">
-                                <label for="rateLimitTier" class="label--full-length"><strong>Rate Limit Tier</strong></label>
-                                <select id="rateLimitTier" name="rateLimitTier" class="form-control" value="@form.data.get("rateLimitTier")">
-                                    @for(tier <- RateLimitTier.values) {
-                                        <option @if(form.data.get("rateLimitTier").contains(tier.toString)) {selected} value="@tier">@tier</option>
-                                    }
-                                </select>
-                            </div>
+                        <div class="form-group">
+                            <label for="applicationName"><strong>Application name</strong></label>
+                            <input type="text" class="form-control" id="applicationName" name="applicationName" value="@form.data.get("applicationName")" maxLength="50"/>
                         </div>
 
-                        <button id="save" class="button" type="submit" role="button">Save</button>
+                        <div class="form-group">
+                            <label for="description"><strong>Description</strong> (optional)</label>
+                            <textarea id="description" class="form-control" name="description" maxLength="250">@form.data.get("description")</textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="redirectUris"><strong>Redirect URLs</strong></label>
+                            <input type="text" class="form-control" id="redirectUris[0]" name="redirectUris[]" placeholder="http://my-first-redirect-uri" value="@form.data.get("redirectUris[0]")" maxLength="50"/><br/>
+                            <input type="text" class="form-control" id="redirectUris[1]" name="redirectUris[]" placeholder="http://my-second-redirect-uri" value="@form.data.get("redirectUris[1]")" maxLength="50"/><br/>
+                            <input type="text" class="form-control" id="redirectUris[2]" name="redirectUris[]" placeholder="http://my-third-redirect-uri" value="@form.data.get("redirectUris[2]")" maxLength="50"/>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="rateLimitTier"><strong>Rate Limit Tier</strong></label>
+                            <select id="rateLimitTier" class="form-control" name="rateLimitTier" class="form-control" value="@form.data.get("rateLimitTier")">
+                            @for(tier <- RateLimitTier.values) {
+                                <option @if(form.data.get("rateLimitTier").contains(tier.toString)) {selected} value="@tier">@tier</option>
+                            }
+                            </select>
+                        </div>
+
+                        <div>
+                            <button class="btn btn-primary" id="save" type="submit" role="button">Save</button>
+                        </div>
                     }
                 </div>
             </div>

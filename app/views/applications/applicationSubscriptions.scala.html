@@ -14,18 +14,18 @@
             <div class="panel panel-default">
                 <div class="panel-body">
 
-                    <ul class="nav nav-tabs">
-                        <li class="nav-item">
-                            <a class="nav-link" href="/applications/@applicationView.app.id">Application Details</a>
+                    <ul class="nav nav-pills nav-justified">
+                        <li>
+                            <a href="/applications/@applicationView.app.id">Application Details</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link active" href="#">Subscriptions</a>
+                        <li class="active">
+                            <a href="/applications/@applicationView.app.id?tab=APP_SUBSCRIPTIONS_TAB">Subscriptions</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/applications/@applicationView.app.id?tab=SANDBOX_CREDENTIALS_TAB">Sandbox Credentials</a>
+                        <li>
+                            <a href="/applications/@applicationView.app.id?tab=SANDBOX_CREDENTIALS_TAB">Sandbox Credentials</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/applications/@applicationView.app.id?tab=PRODUCTION_CREDENTIALS_TAB">Production Credentials</a>
+                        <li>
+                            <a href="/applications/@applicationView.app.id?tab=PRODUCTION_CREDENTIALS_TAB">Production Credentials</a>
                         </li>
                     </ul>
 
@@ -33,12 +33,17 @@
                         <p></p>
                         <p class="alert alert--success">Your changes have been saved</p>
                     }
+                    <br/><br/>
 
-                    <p>
-                        You have to subscribe to an API so your application can access it.
+                    <div class="alert alert-info" role="alert">
+                        You have to subscribe to an API so your application can access it.<br/>
                         You’ll also receive notifications about that API’s lifecycle events, such as new versions
                         being introduced and old versions being retired.
-                    </p>
+                    </div>
+
+                    @if(applicationView.subscriptions.isEmpty) {
+                        <p>There is no API available.</p>
+                    }
 
                     @applicationView.subscriptions.map { subscription =>
 

@@ -14,19 +14,17 @@
             <div class="panel panel-default">
                 <div class="panel-body">
 
-                    <a class="button" href="@{routes.ManageApplicationController.createApplicationForm()}">Add an application</a>
-                    <table class="app">
-                        <colgroup>
-                            <col width="25%"/>
-                            <col width="50%"/>
-                            <col width="25%"/>
-                        </colgroup>
-                        <thead>
-                            <th>Name</th>
-                            <th>Description</th>
-                            <th>Role</th>
-                        </thead>
+                    <a class="btn btn-primary" href="@{routes.ManageApplicationController.createApplicationForm()}">Add an application</a>
 
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Name</th>
+                                <th scope="col">Description</th>
+                                <th scope="col">Role</th>
+                            </tr>
+                        </thead>
+                        <tbody>
                         @for(app<-applications) {
                             <tr>
                                 <td>
@@ -39,6 +37,7 @@
                                 </td>
                             </tr>
                         }
+                        </tbody>
                     </table>
                 </div>
             </div>

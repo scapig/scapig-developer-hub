@@ -6,7 +6,7 @@
 @body = {
     <section>
         <div class="container text-center" style="padding-top: 20px;">
-            <h1 class="s-header"><strong>Profile</strong></h1>
+            <h1 class="s-header"><strong>User Details</strong></h1>
         </div>
     </section>
     <section>
@@ -29,8 +29,6 @@
                             <div class="alert alert-success" role="alert">Your changes have been saved.</div>
                         }
 
-                        <a href="/profile/password">Change Password</a>
-
                         <div class="form-group">
                             <label for="firstName"><strong>First name</strong></label>
                             <input type="text" class="form-control" id="firstName" name="firstName" value="@form.data.get("firstName")" maxLength="50"/>
@@ -43,6 +41,7 @@
 
                         <div>
                             <button class="btn btn-primary" id="save" type="submit" role="button">Save</button>
+                            <a class="btn btn-link" href="/profile/password">Change Password</a>
                         </div>
                     }
                 </div>

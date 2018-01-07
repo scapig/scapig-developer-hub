@@ -16,26 +16,31 @@
                     @if(apis.isEmpty) {
                         <p>There is no API published.</p>
                     }
-                    <ul>
+
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">API</th>
+                                <th scope="col">Versions</th>
+                                <th scope="col">Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
                         @for(api <- apis) {
-                            <li class="border__top-bottom">
-                                <div class="accordion__row greybg">
-                                    <div class="accordion__row__left">
-                                            <a class="bold accordion__button link--no-underline" href="/apis/@api.encodedContext">@api.name</a>
-                                        <div>
-                                            <span>Version</span>
-                                            @for(version <- api.versions) {
-                                                @version.version (@version.status)
-                                            }
-                                        </div>
-                                    </div>
-                                    <div class="accordion__row__right">
-                                        <p>@api.description</p>
-                                    </div>
-                                </div>
-                            </li>
+                            <tr>
+                                <td>
+                                    <a href="/apis/@api.encodedContext">@api.name</a>
+                                </td>
+                                <td>
+                                    @for(version <- api.versions) {
+                                        @version.version (@version.status)<br/>
+                                    }
+                                </td>
+                                <td>@api.description</td>
+                            </tr>
                         }
-                    </ul>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

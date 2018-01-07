@@ -30,8 +30,7 @@
                     </ul>
 
                     @if(saved.getOrElse(false)) {
-                        <p></p>
-                        <p class="alert alert--success">Your changes have been saved</p>
+                        <div class="alert alert-success" role="alert">Your changes have been saved.</div>
                     }
                     <br/><br/>
 
@@ -44,52 +43,34 @@
                     @if(applicationView.subscriptions.isEmpty) {
                         <p>There is no API available.</p>
                     }
+                    <div class="panel panel-default">
+                        @applicationView.subscriptions.map { subscription =>
 
-                    @applicationView.subscriptions.map { subscription =>
+                            <div class="panel-heading">@subscription.apiName</div>
 
-                        <div>
-                            <ul>
-                                <li class="accordion">
-                                    <div class="accordion__row">
-                                        <div class="accordion__row__left">@subscription.apiName</div>
-                                        <div class="accordion__row__right"></div>
-                                    </div>
-                                    @subscription.versions.map { version =>
-                                        <div class="accordion__body">
-                                            <ul>
-                                                <li class="accordion__body__row">
-                                                    <div class="accordion__body__row__left">@version.version.version (@version.version.status)</div>
-                                                    <div class="accordion__body__row__right">
-                                                        <div class="float--right">
-                                                            <div class="toggle">
-                                                            @if(version.subscribed) {
-                                                                <span class="toggle__button--active inline">On</span>
-                                                                <div class="inline">
-                                                                    @helper.form(action = controllers.routes.ManageApplicationController.unsubscribe(applicationView.app.id.toString, subscription.context, version.version.version)) {
-                                                                        @CSRF.formField
-                                                                        <button type="submit" class="linkButton">Off</button>
-                                                                    }
-                                                                </div>
-                                                            } else {
-                                                                <div class="inline">
-                                                                    @helper.form(action = controllers.routes.ManageApplicationController.subscribe(applicationView.app.id.toString, subscription.context, version.version.version)) {
-                                                                        @CSRF.formField
-                                                                        <button type="submit" class="linkButton">On</button>
-                                                                    }
-                                                                </div>
-                                                                <span class="toggle__button--inactive inline">Off</span>
-                                                            }
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    }
-                                </li>
-                            </ul>
-                        </div>
-                    }
+                            <table class="table">
+                                @subscription.versions.map { apiVersion =>
+                                        <tr>
+                                        <td>@apiVersion.version.version (@apiVersion.version.status)</td>
+                                        <td>@if(apiVersion.subscribed) {
+                                            @helper.form(action = controllers.routes.ManageApplicationController.unsubscribe(applicationView.app.id.toString, subscription.context, apiVersion.version.version)) {
+                                                @CSRF.formField
+                                                <span class="btn btn-success">On</span>
+                                                <button type="submit" class="btn btn-link">Off</button>
+                                            }
+                                        } else {
+                                            @helper.form(action = controllers.routes.ManageApplicationController.subscribe(applicationView.app.id.toString, subscription.context, apiVersion.version.version)) {
+                                                @CSRF.formField
+                                                <button type="submit" class="btn btn-link">On</button>
+                                                <span class="btn btn-danger">Off</span>
+                                            }
+                                        }
+                                        </td>
+                                        </tr>
+                                }
+                            </table>
+                        }
+                    </div>
                 </div>
             </div>
         </div>

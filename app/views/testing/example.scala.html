@@ -1,0 +1,56 @@
+@import helper._
+@import org.webjars.play.WebJarsUtil
+
+@(loggedInUser: Option[Developer], gatewayBaseUrl: String)(implicit request: play.api.mvc.Request[Any], messages: Messages, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
+
+@body = {
+    <section>
+        <div class="container text-center" style="padding-top: 20px;">
+            <h1 class="s-header"><strong>Example Requests</strong></h1>
+        </div>
+    </section>
+    <section>
+        <div class="container landing">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">Open Endpoints</div>
+                        <div class="panel-body">
+                            <section>
+                                <pre>
+                                    curl -H "Accept: application/vnd.scapig.1.0+json" @gatewayBaseUrl/hello/world
+                                </pre>
+                            </section>
+                        </div>
+                    </div>
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">Application-restricted Endpoints</div>
+                        <div class="panel-body">
+                            You would need to replace the <pre>SERVER_TOKEN</pre> by your application server token.
+                            <section>
+                                <pre>
+                                    curl -H "Authorization: Bearer SERVER_TOKEN" -H "Accept: application/vnd.scapig.1.0+json" @gatewayBaseUrl/hello/application
+                                </pre>
+                            </section>
+                        </div>
+                    </div>
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">User-restricted Endpoints</div>
+                        <div class="panel-body">
+                            You would need to start the oauth journey with the following URL:
+                            http://localhost/oauth/authorize?
+
+                            <section>
+                                <pre>
+                                    curl -H "Accept: application/vnd.scapig.1.0+json" @gatewayBaseUrl/hello/user
+                                </pre>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+}
+
+@include.template("Gateway", loggedInUser, body)

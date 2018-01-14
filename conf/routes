@@ -32,3 +32,5 @@ GET     /apis                           @controllers.ApiDocumentationController.
 GET     /apis/:context                  @controllers.ApiDocumentationController.getApi(context: String, version: Option[String])
 
 GET     /                               @controllers.ApiDocumentationController.index()
+
+GET     /example                        @controllers.DocsController.example()

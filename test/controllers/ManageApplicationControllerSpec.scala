@@ -220,7 +220,7 @@ class ManageApplicationControllerSpec extends UnitSpec with MockitoSugar {
       val result = await(underTest.createApplicationForm()(addCSRFToken(authenticatedRequest)))
 
       status(result) shouldBe Status.OK
-      bodyOf(result) should include("Add an application")
+      bodyOf(result) should include("Add Application")
     }
 
     "redirect to the login page when the user is not logged in" in new Setup {
@@ -254,7 +254,7 @@ class ManageApplicationControllerSpec extends UnitSpec with MockitoSugar {
       ))))
 
       status(result) shouldBe Status.BAD_REQUEST
-      bodyOf(result) should include("Add an application")
+      bodyOf(result) should include("Add Application")
     }
 
     "redirect to the login page when the user is not logged in" in new Setup {

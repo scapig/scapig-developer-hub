@@ -16,35 +16,30 @@
                     <div class="panel panel-primary">
                         <div class="panel-heading">Open Endpoints</div>
                         <div class="panel-body">
-                            <section>
-                                <pre>
-                                    curl -H "Accept: application/vnd.scapig.1.0+json" @gatewayBaseUrl/hello/world
-                                </pre>
-                            </section>
-                        </div>
-                    </div>
-                    <div class="panel panel-primary">
-                        <div class="panel-heading">Application-restricted Endpoints</div>
-                        <div class="panel-body">
-                            You would need to replace the <pre>SERVER_TOKEN</pre> by your application server token.
-                            <section>
-                                <pre>
-                                    curl -H "Authorization: Bearer SERVER_TOKEN" -H "Accept: application/vnd.scapig.1.0+json" @gatewayBaseUrl/hello/application
-                                </pre>
-                            </section>
-                        </div>
-                    </div>
-                    <div class="panel panel-primary">
-                        <div class="panel-heading">User-restricted Endpoints</div>
-                        <div class="panel-body">
-                            You would need to start the oauth journey with the following URL:
-                            @gatewayBaseUrl/oauth/authorize?client_id=CLIENT_ID&response_type=code&scope=read:hello&redirect_uri=http://my-application
 
-                            <section>
-                                <pre>
-                                    curl -H "Accept: application/vnd.scapig.1.0+json" @gatewayBaseUrl/hello/user
-                                </pre>
-                            </section>
+                            <pre>curl -H "Accept: application/vnd.scapig.1.0+json" @gatewayBaseUrl/hello/world</pre>
+                        </div>
+                    </div>
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">Application Restricted Endpoints</div>
+                        <div class="panel-body">
+                            <pre>curl -H "Authorization: Bearer [SERVER_TOKEN]" -H "Accept: application/vnd.scapig.1.0+json" @gatewayBaseUrl/hello/application</pre>
+                            <span style="font-size:16px;">Replace the <code class="w3-codespan">SERVER_TOKEN</code> by your application server token.</span>
+                        </div>
+                    </div>
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">User Restricted Endpoints</div>
+                        <div class="panel-body">
+                            <h4>1. User logs in and grant access</h4>
+                            @defining(s"$gatewayBaseUrl/oauth/authorize?client_id=[CLIENT_ID]&response_type=code&scope=read:hello&redirect_uri=http://[REDIRECT_URI]") { link =>
+                                <pre><a href="@link">@link</a></pre>
+                            }
+
+                            <h4>2. Create a token from the authorization code</h4>
+                            <pre>curl --data 'client_id=[CLIENT_ID]&client_secret=[CLIENT_SECRET]&grant_type=authorization_code&authorization_code=[AUTHORIZATION_CODE]' @gatewayBaseUrl/oauth/token</pre>
+
+                            <h4>3. Call the API</h4>
+                            <pre>curl -H "Accept: application/vnd.scapig.1.0+json" -H "Authorization: Bearer [ACCESS_TOKEN]" @gatewayBaseUrl/hello/user</pre>
                         </div>
                     </div>
                 </div>

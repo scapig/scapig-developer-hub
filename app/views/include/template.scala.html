@@ -2,7 +2,10 @@
 
 @(title: String, loggedInUser: Option[Developer], html: Html)(implicit webJarsUtil: WebJarsUtil, assets: AssetsFinder)
 <html>
-    <head><title>Application</title></head>
+    <head>
+        <title>@title</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    </head>
     @Html(webJarsUtil.css("bootstrap.min.css"))
     @Html(webJarsUtil.css("bootstrap-theme.min.css"))
 
@@ -18,16 +21,16 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="http://scapig.com">SCAPIG</a>
+                    <a class="navbar-brand" href="/">DEVELOPER HUB</a>
                 </div>
                 <nav class="collapse navbar-collapse">
                     <ul class="nav navbar-nav">
-                        <li><a href="/">Developer Hub</a></li>
                         <li><a href="/apis">APIs</a></li>
                         <li><a href="/applications">Applications</a></li>
                         <li><a href="/example">Example</a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
+                        <li><a target="_blank" href="http://www.scapig.com">Scapig&nbsp;<span style="font-size: 12px;" class="glyphicon glyphicon-new-window"/></a></li>
                         @loggedInUser match {
                             case Some(user) => {
                                 <li><a href="/profile">@user.displayedName</a></li>

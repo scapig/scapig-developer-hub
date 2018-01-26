@@ -2,7 +2,8 @@
 @import models.Application
 @import org.webjars.play.WebJarsUtil
 
-@(loggedInUser: Developer, applicationView: ApplicationViewData, form: Form[controllers.EditApplicationForm], saved: Option[Boolean] = None)(implicit request: play.api.mvc.Request[Any], messages: Messages, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
+@import config.AppConfig
+@(loggedInUser: Developer, applicationView: ApplicationViewData, form: Form[controllers.EditApplicationForm], saved: Option[Boolean] = None, appConfig: AppConfig)(implicit request: play.api.mvc.Request[Any], messages: Messages, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
 
 @body = {
     <section>
@@ -67,7 +68,7 @@
                             <label for="rateLimitTier"><strong>Rate Limit Tier</strong></label>
                             <select id="rateLimitTier" class="form-control" name="rateLimitTier" class="form-control" value="@form.data.get("rateLimitTier")">
                             @for(tier <- RateLimitTier.values) {
-                                <option @if(form.data.get("rateLimitTier").contains(tier.toString)) {selected} value="@tier">@tier</option>
+                                <option @if(form.data.get("rateLimitTier").contains(tier.toString)) {selected} value="@tier">@tier (@appConfig.requestsPerMinute(tier) requests/minute)</option>
                             }
                             </select>
                         </div>

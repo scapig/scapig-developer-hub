@@ -3,7 +3,7 @@ package controllers
 import javax.inject.{Inject, Singleton}
 
 import com.mohiva.play.silhouette.api.Silhouette
-import config.{DefaultEnv, WithApplication}
+import config.{AppConfig, DefaultEnv, WithApplication}
 import models._
 import org.webjars.play.WebJarsUtil
 import play.api.data.Form
@@ -18,6 +18,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 @Singleton
 class ManageApplicationController  @Inject()(cc: ControllerComponents,
                                              applicationService: ApplicationService,
+                                             appConfig: AppConfig,
                                              silhouette: Silhouette[DefaultEnv])(implicit webJarsUtil: WebJarsUtil, assets: AssetsFinder) extends AbstractController(cc) with I18nSupport {
 
   val APP_DETAILS_TAB = "APP_DETAILS_TAB"
@@ -38,7 +39,7 @@ class ManageApplicationController  @Inject()(cc: ControllerComponents,
           case Some(`APP_SUBSCRIPTIONS_TAB`) => Ok(views.html.applications.applicationSubscriptions(request.identity, applicationViewData, saved))
           case Some(`PRODUCTION_CREDENTIALS_TAB`) => Ok(views.html.applications.productionCredentials(request.identity, applicationViewData))
           case Some(`SANDBOX_CREDENTIALS_TAB`) => Ok(views.html.applications.sandboxCredentials(request.identity, applicationViewData))
-          case _ => Ok(views.html.applications.applicationDetails(request.identity, applicationViewData, EditApplicationForm.form.fill(EditApplicationForm(applicationViewData.app)), saved))
+          case _ => Ok(views.html.applications.applicationDetails(request.identity, applicationViewData, EditApplicationForm.form.fill(EditApplicationForm(applicationViewData.app)), saved, appConfig))
         }
       } recover {
         case _: ApplicationNotFoundException => Results.NotFound("Application not found")
@@ -83,7 +84,7 @@ class ManageApplicationController  @Inject()(cc: ControllerComponents,
     silhouette.SecuredAction(WithApplication(applicationService.fetchById(id))).async { implicit request =>
       def updateApplicationWithFormErrors(errors: Form[EditApplicationForm]) = {
         applicationService.fetchApplicationViewData(id) map { applicationViewData =>
-          BadRequest(views.html.applications.applicationDetails(request.identity, applicationViewData, errors))
+          BadRequest(views.html.applications.applicationDetails(request.identity, applicationViewData, errors, None, appConfig))
         }
       }
 

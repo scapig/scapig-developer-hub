@@ -39,3 +39,13 @@ body {
 .landing {
     font-size: 2rem;
 }
+
+.navbar-inverse {
+    background-color: #0000CD;
+    border-color: #0000CD;
+    background-image: none;
+}
+
+.navbar-inverse .navbar-brand, .navbar-inverse .navbar-nav>li>a {
+    color: #f9f9f9;
+}

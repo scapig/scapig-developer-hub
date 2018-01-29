@@ -20,5 +20,5 @@ docker push scapig/scapig-developer-hub:VERSION
 
 ## Running
 ``
-docker run -p9017:9017 -d scapig/scapig-developer-hub:VERSION
+docker run -p9020:9020 -d scapig/scapig-developer-hub:VERSION
 ``

@@ -13,12 +13,12 @@ docker build -t scapig-developer-hub .
 
 ## Publishing
 ``
-docker tag scapig-developer-hub scapig/scapig-developer-hub:VERSION
+docker tag scapig-developer-hub scapig/scapig-developer-hub
 docker login
-docker push scapig/scapig-developer-hub:VERSION
+docker push scapig/scapig-developer-hub
 ``
 
 ## Running
 ``
-docker run -p9020:9020 -d scapig/scapig-developer-hub:VERSION
+docker run -p9020:9020 -d scapig/scapig-developer-hub
 ``

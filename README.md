@@ -1,5 +1,7 @@
 ## scapig-developer-hub
 
+This is an example developer hub for the Scapig API Platform (http://www.scapig.com).
+
 ## Building
 ``
 sbt clean test it:test component:test
